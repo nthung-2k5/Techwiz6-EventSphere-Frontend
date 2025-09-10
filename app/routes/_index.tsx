@@ -1,13 +1,26 @@
 import type { Route } from "./+types/_index";
-import { Welcome } from "../welcome/welcome";
+import { Typography, Button } from "antd";
+import { Link } from "react-router";
 
 export function meta({}: Route.MetaArgs) {
-    return [
-        { title: "New React Router App" },
-        { name: "description", content: "Welcome to React Router!" },
-    ];
+  return [
+    { title: "EventSphere - Home" },
+    { name: "description", content: "Event Management System" },
+  ];
 }
 
 export default function Home() {
-    return <Welcome />;
+  return (
+    <div style={{ textAlign: "center", marginTop: 50 }}>
+      <Typography.Title>Welcome to EventSphere</Typography.Title>
+      <Typography.Paragraph>
+        Explore, register, and manage events all in one place.
+      </Typography.Paragraph>
+      <Link to="/events">
+        <Button type="primary" size="large">
+          Browse Events
+        </Button>
+      </Link>
+    </div>
+  );
 }
