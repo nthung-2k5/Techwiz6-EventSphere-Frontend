@@ -1,31 +1,29 @@
-import { List, Card, Typography } from "antd";
+import { Outlet, useLocation, Link } from "react-router";
+import { Breadcrumb } from "antd";
 
-const { Title } = Typography;
+export default function EventsLayout() {
+  const location = useLocation();
+  const pathParts = location.pathname.split("/").filter(Boolean);
 
-// giả lập dữ liệu chung
-const allEvents = [
-  { id: 1, title: "Tech Conference 2025", date: "2025-09-15" },
-  { id: 2, title: "AI & Robotics Workshop", date: "2025-09-20" },
-  { id: 3, title: "Startup Pitching Day", date: "2025-09-25" },
-  { id: 4, title: "University Sports Festival", date: "2025-10-01" },
-  { id: 5, title: "Cultural Exchange Fair", date: "2025-10-10" },
-];
-
-export default function EventsPage() {
   return (
-    <div>
-      <Title level={2}>📅 All Events</Title>
-      <List
-        grid={{ gutter: 16, column: 3 }}
-        dataSource={allEvents}
-        renderItem={(event) => (
-          <List.Item>
-            <Card title={event.title}>
-              <p>Date: {event.date}</p>
-            </Card>
-          </List.Item>
+    <div style={{ padding: "1rem 2rem" }}>
+      {/* Breadcrumb */}
+      <Breadcrumb style={{ marginBottom: "1rem" }}>
+        <Breadcrumb.Item>
+          <Link to="/">Home</Link>
+        </Breadcrumb.Item>
+        {pathParts.includes("events") && (
+          <Breadcrumb.Item>
+            <Link to="/events">Events</Link>
+          </Breadcrumb.Item>
         )}
-      />
+        {pathParts.length > 1 && pathParts[1] !== "events" && (
+          <Breadcrumb.Item>{pathParts[1]}</Breadcrumb.Item>
+        )}
+      </Breadcrumb>
+
+      {/* Nội dung con */}
+      <Outlet />
     </div>
   );
 }

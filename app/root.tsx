@@ -12,6 +12,7 @@ import {
   import "@ant-design/v5-patch-for-react-19";
   import DashboardLayout from "./components/DashboardLayout";
   import { AuthProvider } from "./context/AuthContext";
+import { EventProvider } from "./context/EventContext";
   
   export const links: Route.LinksFunction = () => [
     { rel: "preconnect", href: "https://fonts.googleapis.com" },
@@ -47,8 +48,10 @@ import {
  
   export default function App() {
     return (
-      <AuthProvider>
-        <DashboardLayout />
+        <AuthProvider>
+        <EventProvider>
+          <DashboardLayout />
+        </EventProvider>
       </AuthProvider>
     );
   }
