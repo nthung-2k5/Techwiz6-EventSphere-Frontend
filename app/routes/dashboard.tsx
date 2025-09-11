@@ -8,9 +8,9 @@ export default function DashboardPage() {
   const { user } = useAuth();
   const { events } = useEvents();
 
-  if (!user) {
-    return <h2>You must login to access the dashboard.</h2>;
-  }
+    if (!user) {
+        return <h2>You must login to access the dashboard.</h2>;
+    }
 
   // Nếu participant → hiển thị tất cả events
   if (user.role === "participant") {
