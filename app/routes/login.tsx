@@ -1,6 +1,9 @@
-import { Button, Card, Form, Input, message } from "antd";
+import { Button, Card, Form, Input, message, Typography, Space, Divider } from "antd";
 import { useAuth } from "../context/AuthContext";
-import { useNavigate } from "react-router";
+import { useNavigate, Link } from "react-router";
+import { UserOutlined, LockOutlined, LoginOutlined } from "@ant-design/icons";
+
+const { Title, Text } = Typography;
 
 export default function LoginPage() {
     const { login } = useAuth();
@@ -17,20 +20,92 @@ export default function LoginPage() {
     };
 
     return (
-        <Card title="Login" style={{ maxWidth: 400, margin: "2rem auto" }}>
-            <Form onFinish={onFinish}>
-                <Form.Item name="username" rules={[{ required: true }]}>
-                    <Input placeholder="Username" />
-                </Form.Item>
-                <Form.Item name="password" rules={[{ required: true }]}>
-                    <Input.Password placeholder="Password" />
-                </Form.Item>
-                <Form.Item>
-                    <Button type="primary" htmlType="submit" block>
-                        Login
-                    </Button>
-                </Form.Item>
-            </Form>
-        </Card>
+        <div className="min-h-screen bg-gradient-to-br from-blue-500 via-purple-600 to-violet-700 flex items-center justify-center p-5">
+            <Card className="max-w-md w-full rounded-2xl shadow-2xl border-0">
+                <div className="text-center mb-8">
+                    <Title 
+                        level={2} 
+                        className="mb-2 bg-gradient-to-r from-blue-500 to-purple-600 bg-clip-text text-transparent"
+                    >
+                        Welcome Back
+                    </Title>
+                    <Text type="secondary">Sign in to your EventSphere account</Text>
+                </div>
+
+                <Form 
+                    onFinish={onFinish}
+                    layout="vertical"
+                    size="large"
+                >
+                    <Form.Item 
+                        name="username" 
+                        label="Username"
+                        rules={[{ required: true, message: 'Please enter your username' }]}
+                    >
+                        <Input 
+                            prefix={<UserOutlined className="text-gray-400" />}
+                            placeholder="Enter your username" 
+                            className="rounded-lg"
+                        />
+                    </Form.Item>
+                    
+                    <Form.Item 
+                        name="password" 
+                        label="Password"
+                        rules={[{ required: true, message: 'Please enter your password' }]}
+                    >
+                        <Input.Password 
+                            prefix={<LockOutlined className="text-gray-400" />}
+                            placeholder="Enter your password"
+                            className="rounded-lg"
+                        />
+                    </Form.Item>
+                    
+                    <Form.Item className="mb-4">
+                        <Button 
+                            type="primary" 
+                            htmlType="submit" 
+                            block
+                            icon={<LoginOutlined />}
+                            className="h-12 rounded-lg bg-gradient-to-r from-blue-500 to-purple-600 border-0 text-base font-semibold hover:from-blue-600 hover:to-purple-700"
+                        >
+                            Sign In
+                        </Button>
+                    </Form.Item>
+                </Form>
+
+                <Divider className="my-6">
+                    <Text type="secondary">New to EventSphere?</Text>
+                </Divider>
+
+                <div className="text-center">
+                    <Link to="/register">
+                        <Button 
+                            ghost
+                            block
+                            className="h-12 rounded-lg border-blue-500 text-blue-500 text-base font-semibold hover:bg-blue-50"
+                        >
+                            Create Account
+                        </Button>
+                    </Link>
+                </div>
+
+                <div className="text-center mt-6">
+                    <Space direction="vertical" size="small">
+                        <Text type="secondary" className="text-sm">
+                            Demo Accounts:
+                        </Text>
+                        <Space split={<Divider type="vertical" />}>
+                            <Text type="secondary" className="text-xs">
+                                participant/password
+                            </Text>
+                            <Text type="secondary" className="text-xs">
+                                organizer/password
+                            </Text>
+                        </Space>
+                    </Space>
+                </div>
+            </Card>
+        </div>
     );
 }
