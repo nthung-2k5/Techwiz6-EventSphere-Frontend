@@ -6,53 +6,104 @@ export interface Event {
   title: string;
   description: string;
   location: string;
-  // single-day
   date?: string;
-  // multi-day
   startDate?: string;
   endDate?: string;
-  // common
   startTime: string;
   endTime: string;
-  organizer: string; // username người tạo
+  organizer: string;
+  image?: string; 
 }
 
 interface EventContextProps {
   events: Event[];
   addEvent: (event: Omit<Event, "id" | "organizer">) => void;
+  updateEvent: (eventId: number, updated: Partial<Event>) => void;
+  deleteEvent: (eventId: number) => void;
 }
 
 const EventContext = createContext<EventContextProps | undefined>(undefined);
 
 export function EventProvider({ children }: { children: React.ReactNode }) {
-  const [events, setEvents] = useState<Event[]>([]);
   const { user } = useAuth();
 
-  // Load events from localStorage when component mounts
+  const [events, setEvents] = useState<Event[]>([
+    {
+      id: 1,
+      title: "Tech Conference 2025",
+      description: "A conference about the latest in technology.",
+      location: "Hanoi University",
+      startDate: "2025-09-01",
+      endDate: "2025-09-01",
+      startTime: "09:00",
+      endTime: "17:00",
+      organizer: "admin",
+      image: "https://picsum.photos/600/300?random=1",
+    },
+    {
+      id: 2,
+      title: "Cultural Festival",
+      description: "Annual student cultural event with music and food.",
+      location: "Ho Chi Minh City",
+      startDate: "2025-09-15",
+      endDate: "2025-09-17",
+      startTime: "08:00",
+      endTime: "22:00",
+      organizer: "organizer1",
+      image: "https://picsum.photos/600/300?random=2",
+    },
+    {
+      id: 3,
+      title: "Job Fair 2025",
+      description: "Meet top companies and apply for jobs.",
+      location: "Da Nang",
+      startDate: "2025-08-20",
+      endDate: "2025-08-20",
+      startTime: "08:00",
+      endTime: "17:00",
+      organizer: "organizer2",
+      image: "https://picsum.photos/600/300?random=3",
+    },
+  ]);
+
   useEffect(() => {
-    const storedEvents = localStorage.getItem("events");
-    if (storedEvents) {
-      setEvents(JSON.parse(storedEvents));
+    const stored = localStorage.getItem("events");
+    if (stored) {
+      const parsed = JSON.parse(stored);
+      if (parsed.length > 0) {
+        setEvents(parsed);
+      }
     }
   }, []);
 
-  // Save events to localStorage whenever they change
   useEffect(() => {
     localStorage.setItem("events", JSON.stringify(events));
   }, [events]);
 
   const addEvent = (event: Omit<Event, "id" | "organizer">) => {
     if (!user) return;
+
     const newEvent: Event = {
       ...event,
-      id: events.length + 1,
+      id: events.length > 0 ? Math.max(...events.map((e) => e.id)) + 1 : 1,
       organizer: user.username,
     };
+
     setEvents((prev) => [...prev, newEvent]);
   };
 
+  const updateEvent = (eventId: number, updated: Partial<Event>) => {
+    setEvents((prev) =>
+      prev.map((e) => (e.id === eventId ? { ...e, ...updated } : e))
+    );
+  };
+
+  const deleteEvent = (eventId: number) => {
+    setEvents((prev) => prev.filter((e) => e.id !== eventId));
+  };
+
   return (
-    <EventContext.Provider value={{ events, addEvent }}>
+    <EventContext.Provider value={{ events, addEvent, updateEvent, deleteEvent }}>
       {children}
     </EventContext.Provider>
   );

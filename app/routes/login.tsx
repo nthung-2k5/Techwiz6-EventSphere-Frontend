@@ -10,7 +10,14 @@ export default function LoginPage() {
         const success = login(values.username, values.password);
         if (success) {
             message.success("Login successful!");
-            navigate("/dashboard");
+            // Check if there's a redirect URL saved
+            const redirectUrl = localStorage.getItem("redirectAfterLogin");
+            if (redirectUrl) {
+                localStorage.removeItem("redirectAfterLogin"); // Clean up
+                navigate(redirectUrl);
+            } else {
+                navigate("/dashboard");
+            }
         } else {
             message.error("Invalid credentials");
         }
