@@ -6,12 +6,12 @@ import {
     ScrollRestoration,
 } from "react-router";
   
-  import type { Route } from "./+types/root";
-  import "./app.css";
-  import "antd/dist/reset.css";
-  import "@ant-design/v5-patch-for-react-19";
-  import DashboardLayout from "./components/DashboardLayout";
-  import { AuthProvider } from "./context/AuthContext";
+import type { Route } from "./+types/root";
+import "./app.css";
+import "antd/dist/reset.css";
+import "@ant-design/v5-patch-for-react-19";
+import DashboardLayout from "./components/DashboardLayout";
+import { AuthProvider } from "./context/AuthContext";
 import { EventProvider } from "./context/EventContext";
   
 export const links: Route.LinksFunction = () => [
@@ -49,10 +49,10 @@ export function Layout({ children }: { children: React.ReactNode }) {
 export default function App() {
     return (
         <AuthProvider>
-        <EventProvider>
-          <DashboardLayout />
-        </EventProvider>
-      </AuthProvider>
+            <EventProvider>
+                <DashboardLayout />
+            </EventProvider>
+        </AuthProvider>
     );
 }
   
