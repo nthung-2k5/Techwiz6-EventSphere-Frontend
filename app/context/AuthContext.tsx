@@ -170,7 +170,7 @@ const mockUsers: User[] = [
 interface AuthContextProps {
     user: User | null;
     users: User[];
-    login: (username: string, password: string) => boolean;
+    login: (email: string, password: string) => boolean;
     register: (userData: Omit<User, "registeredEvents" | "joinDate" | "isActive">) => boolean;
     logout: () => void;
     registerEvent: (eventId: number) => void;
@@ -210,8 +210,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         }
     }, [user]);
 
-    const login = (username: string, password: string) => {
-        const found = users.find((u) => u.username === username && u.password === password && u.isActive);
+    const login = (email: string, password: string) => {
+        const found = users.find((u) => u.email.toLowerCase() === email.toLowerCase() && u.password === password && u.isActive);
         if (found) {
             setUser(found);
             return true;

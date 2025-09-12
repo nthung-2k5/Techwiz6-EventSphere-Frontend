@@ -353,7 +353,7 @@ export default function AdminDashboard() {
                                         <List.Item>
                                             <List.Item.Meta title={item.title} />
                                             <Tag color={item.status === 'pending' ? 'orange' : 'green'}>
-                                                {item.status === 'pending' ? 'Chờ duyệt' : 'Đã duyệt'}
+                                                {item.status === 'pending' ? 'Pending' : 'Approved'}
                                             </Tag>
                                         </List.Item>
                                     )}

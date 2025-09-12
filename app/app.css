@@ -246,6 +246,37 @@ body {
   box-shadow: 0 8px 32px rgba(0, 175, 239, 0.15);
 }
 
+/* Top horizontal participant menu overrides */
+.top-menu.ant-menu-horizontal > .ant-menu-item,
+.top-menu.ant-menu-horizontal > .ant-menu-submenu {
+  color: rgba(255, 255, 255, 0.85);
+  background: transparent;
+}
+.top-menu.ant-menu-horizontal > .ant-menu-item a {
+  color: inherit;
+}
+.top-menu.ant-menu-horizontal > .ant-menu-item:hover,
+.top-menu.ant-menu-horizontal > .ant-menu-submenu:hover {
+  color: #ffffff;
+}
+.top-menu.ant-menu-horizontal > .ant-menu-item:hover a {
+  color: #ffffff;
+}
+.top-menu.ant-menu-horizontal > .ant-menu-item-selected,
+.top-menu.ant-menu-horizontal > .ant-menu-submenu-selected {
+  color: #ffffff !important;
+}
+.top-menu.ant-menu-horizontal > .ant-menu-item-selected a {
+  color: #ffffff !important;
+}
+.top-menu .anticon {
+  color: inherit;
+}
+.top-menu.ant-menu-horizontal > .ant-menu-item::after,
+.top-menu.ant-menu-horizontal > .ant-menu-submenu::after {
+  border-bottom-color: rgba(255, 255, 255, 0.9);
+}
+
 /* Utility Classes */
 .backdrop-blur-glass {
   backdrop-filter: blur(16px) saturate(180%);

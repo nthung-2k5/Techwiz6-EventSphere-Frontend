@@ -29,7 +29,7 @@ export default function DashboardPage() {
         return <ParticipantDashboard />;
     }
 
-    return <h2>Welcome, Guest!</h2>;
+    return <h2>Welcome, {user.fullName || user.username}!</h2>;
 }
 
 /* -------------------- Organizer Dashboard -------------------- */

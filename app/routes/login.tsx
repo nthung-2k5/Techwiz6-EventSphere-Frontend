@@ -1,26 +1,19 @@
 import { Button, Card, Form, Input, message, Typography, Space, Divider } from "antd";
 import { useAuth } from "../context/AuthContext";
 import { useNavigate, Link } from "react-router";
-import { UserOutlined, LockOutlined, LoginOutlined } from "@ant-design/icons";
+import { MailOutlined, LockOutlined, LoginOutlined } from "@ant-design/icons";
 
 const { Title, Text } = Typography;
 
 export default function LoginPage() {
-    const { login } = useAuth();
+    const { login, user  } = useAuth();
     const navigate = useNavigate();
 
-    const onFinish = (values: { username: string; password: string }) => {
-        const success = login(values.username, values.password);
+    const onFinish = (values: { email: string; password: string }) => {
+        const success = login(values.email, values.password);
         if (success) {
             message.success("Login successful!");
-            // Check if there's a redirect URL saved
-            const redirectUrl = localStorage.getItem("redirectAfterLogin");
-            if (redirectUrl) {
-                localStorage.removeItem("redirectAfterLogin"); // Clean up
-                navigate(redirectUrl);
-            } else {
-                navigate("/dashboard");
-            }
+            navigate("/dashboard");
         } else {
             message.error("Invalid credentials");
         }
@@ -45,13 +38,13 @@ export default function LoginPage() {
                     size="large"
                 >
                     <Form.Item 
-                        name="username" 
-                        label="Username"
-                        rules={[{ required: true, message: 'Please enter your username' }]}
+                        name="email" 
+                        label="Email"
+                        rules={[{ required: true, type: 'email', message: 'Please enter a valid email' }]}
                     >
                         <Input 
-                            prefix={<UserOutlined className="text-gray-400" />}
-                            placeholder="Enter your username" 
+                            prefix={<MailOutlined className="text-gray-400" />}
+                            placeholder="Enter your email" 
                             className="rounded-lg"
                         />
                     </Form.Item>

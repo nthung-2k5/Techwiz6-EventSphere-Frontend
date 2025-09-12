@@ -25,6 +25,10 @@ export default function HomePage() {
     const totalEvents = events.filter(event => event.status === 'approved').length;
     const totalParticipants = events.reduce((sum, event) => sum + event.currentParticipants, 0);
 
+    const dashboardPath = user
+        ? (user.role === 'admin' ? '/admin' : user.role === 'organizer' ? '/organizer/dashboard' : '/dashboard')
+        : '/dashboard';
+
     return (
         <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100">
             {/* Hero Section */}
@@ -71,7 +75,7 @@ export default function HomePage() {
                             </>
                         ) : (
                             <>
-                                <Link to="/dashboard">
+                                <Link to={dashboardPath}>
                                     <Button 
                                         type="primary" 
                                         size="large"
@@ -378,7 +382,7 @@ export default function HomePage() {
                             </Link>
                         </Space>
                     ) : (
-                        <Link to="/dashboard">
+                        <Link to={dashboardPath}>
                             <Button 
                                 type="primary" 
                                 size="large"

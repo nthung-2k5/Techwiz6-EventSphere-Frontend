@@ -68,30 +68,37 @@ export default function DashboardLayout() {
                 icon: <HomeOutlined />, 
                 label: <Link to="/">Trang chủ</Link> 
             },
-            { 
-                key: "/events", 
-                icon: <CalendarOutlined />, 
-                label: <Link to="/events">Danh sách sự kiện</Link> 
-            },
-            { 
-                key: "/media-gallery", 
-                icon: <PictureOutlined />, 
-                label: <Link to="/event.media">Thư viện phương tiện</Link> 
+            {
+                key: "events-public",
+                icon: <CalendarOutlined />,
+                label: "Events",
+                children: [
+                    { 
+                        key: "/events", 
+                        icon: <CalendarOutlined />, 
+                        label: <Link to="/events">Events</Link> 
+                    },
+                    { 
+                        key: "/media-gallery", 
+                        icon: <PictureOutlined />, 
+                        label: <Link to="/media-gallery">Media Gallery</Link> 
+                    },
+                ]
             },
             {
                 key: "info",
                 icon: <InfoCircleOutlined />,
-                label: "Thông tin",
+                label: "Info",
                 children: [
                     { 
                         key: "/about", 
                         icon: <InfoCircleOutlined />, 
-                        label: <Link to="/about">Giới thiệu</Link> 
+                        label: <Link to="/about">About</Link> 
                     },
                     { 
                         key: "/contact", 
                         icon: <PhoneOutlined />, 
-                        label: <Link to="/contact">Liên hệ</Link> 
+                        label: <Link to="/contact">Contact</Link> 
                     },
                     { 
                         key: "/faq", 
@@ -108,7 +115,7 @@ export default function DashboardLayout() {
             { 
                 key: "/register", 
                 icon: <UserAddOutlined />, 
-                label: <Link to="/register">Đăng ký</Link> 
+                label: <Link to="/register">Register</Link> 
             },
         ];
     } else if (user.role === "participant") {
@@ -116,37 +123,56 @@ export default function DashboardLayout() {
             { 
                 key: "/", 
                 icon: <HomeOutlined />, 
-                label: <Link to="/">Trang chủ</Link> 
+                label: <Link to="/">Home</Link> 
             },
-            { 
-                key: "/dashboard", 
-                icon: <DashboardOutlined />, 
-                label: <Link to="/dashboard">Bảng điều khiển</Link> 
+            {
+                key: "events-group",
+                icon: <AppstoreOutlined />,
+                label: "Events",
+                children: [
+                    { 
+                        key: "/events", 
+                        icon: <CalendarOutlined />, 
+                        label: <Link to="/events">Events</Link> 
+                    },
+                    { 
+                        key: "/checkin", 
+                        icon: <QrcodeOutlined />, 
+                        label: <Link to="/checkin">QR Check-in</Link> 
+                    },
+                    { 
+                        key: "/certificate", 
+                        icon: <FileDoneOutlined />, 
+                        label: <Link to="/certificate">Certificates</Link> 
+                    },
+                    { 
+                        key: "/media-gallery", 
+                        icon: <PictureOutlined />, 
+                        label: <Link to="/media-gallery">Media Gallery</Link> 
+                    },
+                ]
             },
-            { 
-                key: "/events", 
-                icon: <CalendarOutlined />, 
-                label: <Link to="/events">Danh sách sự kiện</Link> 
-            },
-            { 
-                key: "/checkin", 
-                icon: <QrcodeOutlined />, 
-                label: <Link to="/checkin">Check-in QR</Link> 
-            },
-            { 
-                key: "/certificates", 
-                icon: <FileDoneOutlined />, 
-                label: <Link to="/certificates">Chứng chỉ</Link> 
-            },
-            { 
-                key: "/feedback", 
-                icon: <FormOutlined />, 
-                label: <Link to="/feedback">Đánh giá</Link> 
-            },
-            { 
-                key: "/media-gallery", 
-                icon: <PictureOutlined />, 
-                label: <Link to="/event.media">Thư viện phương tiện</Link> 
+            {
+                key: "about-me",
+                icon: <UserOutlined />,
+                label: "About Me",
+                children: [
+                    { 
+                        key: "/about", 
+                        icon: <InfoCircleOutlined />, 
+                        label: <Link to="/about">About</Link> 
+                    },
+                    { 
+                        key: "/contact", 
+                        icon: <PhoneOutlined />, 
+                        label: <Link to="/contact">Contact</Link> 
+                    },
+                    { 
+                        key: "/feedback", 
+                        icon: <FormOutlined />, 
+                        label: <Link to="/feedback">Feedback</Link> 
+                    },
+                ]
             },
         ];
     } else if (user.role === "organizer") {
@@ -159,7 +185,7 @@ export default function DashboardLayout() {
             { 
                 key: "/organizer/dashboard", 
                 icon: <DashboardOutlined />, 
-                label: <Link to="/organizer/dashboard">Bảng điều khiển</Link> 
+                label: <Link to="/organizer/dashboard">Dashboard</Link> 
             },
             {
                 key: "events-management",
@@ -169,56 +195,56 @@ export default function DashboardLayout() {
                     { 
                         key: "/organizer/events", 
                         icon: <EyeOutlined />, 
-                        label: <Link to="/organizer/events">Tổng quan sự kiện</Link> 
+                        label: <Link to="/organizer/events">Event Overview</Link> 
                     },
                     { 
                         key: "/organizer/event/create", 
                         icon: <PlusOutlined />, 
-                        label: <Link to="/organizer/event/create">Tạo sự kiện</Link> 
+                        label: <Link to="/organizer/event/create">Create Event</Link> 
                     },
                     { 
                         key: "/organizer/event/edit", 
                         icon: <EditOutlined />, 
-                        label: <Link to="/organizer/event/edit">Chỉnh sửa sự kiện</Link> 
+                        label: <Link to="/organizer/event/edit">Edit Event</Link> 
                     },
                     { 
                         key: "/organizer/registrations", 
                         icon: <TeamOutlined />, 
-                        label: <Link to="/organizer/registrations">Quản lý đăng ký</Link> 
+                        label: <Link to="/organizer/registrations">Registrations</Link> 
                     },
                 ]
             },
             {
                 key: "media-management",
                 icon: <PictureOutlined />,
-                label: "Quản lý phương tiện",
+                label: "Media Management",
                 children: [
                     { 
                         key: "/organizer/media/upload", 
                         icon: <UploadOutlined />, 
-                        label: <Link to="/organizer/media/upload">Tải lên phương tiện</Link> 
+                        label: <Link to="/organizer/media/upload">Upload Media</Link> 
                     },
                     { 
                         key: "/organizer/media/gallery", 
                         icon: <PictureOutlined />, 
-                        label: <Link to="/organizer/media/gallery">Thư viện</Link> 
+                        label: <Link to="/organizer/media/gallery">Gallery</Link> 
                     },
                 ]
             },
             { 
                 key: "/organizer/certificates", 
                 icon: <FileDoneOutlined />, 
-                label: <Link to="/organizer/certificates">Quản lý chứng chỉ</Link> 
+                label: <Link to="/organizer/certificates">Certificates</Link> 
             },
             { 
                 key: "/organizer/notifications", 
                 icon: <NotificationOutlined />, 
-                label: <Link to="/organizer/notifications">Gửi thông báo</Link> 
+                label: <Link to="/organizer/notifications">Notifications</Link> 
             },
             { 
                 key: "/organizer/statistics", 
                 icon: <BarChartOutlined />, 
-                label: <Link to="/organizer/statistics">Thống kê</Link> 
+                label: <Link to="/organizer/statistics">Analytics</Link> 
             },
         ];
     } else if (user.role === "admin") {
@@ -231,99 +257,69 @@ export default function DashboardLayout() {
             { 
                 key: "/admin", 
                 icon: <CrownOutlined />, 
-                label: <Link to="/admin">Bảng điều khiển Admin</Link> 
+                label: <Link to="/admin">Admin Dashboard</Link> 
             },
-            {
-                key: "user-management",
-                icon: <UserOutlined />,
-                label: "Quản lý người dùng",
-                children: [
-                    { 
-                        key: "/admin/users", 
-                        icon: <TeamOutlined />, 
-                        label: <Link to="/admin/users">Danh sách người dùng</Link> 
-                    },
-                    { 
-                        key: "/admin/users/roles", 
-                        icon: <SafetyOutlined />, 
-                        label: <Link to="/admin/users/roles">Quản lý vai trò</Link> 
-                    },
-                    { 
-                        key: "/admin/users/status", 
-                        icon: <CheckCircleOutlined />, 
-                        label: <Link to="/admin/users/status">Trạng thái tài khoản</Link> 
-                    },
-                ]
+            { 
+                key: "/admin/users", 
+                icon: <UserOutlined />, 
+                label: <Link to="/admin/users">User Management</Link> 
             },
-            {
-                key: "event-management",
-                icon: <CalendarOutlined />,
-                label: "Quản lý sự kiện",
-                children: [
-                    { 
-                        key: "/admin/events", 
-                        icon: <EyeOutlined />, 
-                        label: <Link to="/admin/events">Tất cả sự kiện</Link> 
-                    },
-                    { 
-                        key: "/admin/events/approval", 
-                        icon: <CheckCircleOutlined />, 
-                        label: <Link to="/admin/events/approval">Duyệt sự kiện</Link> 
-                    },
-                    { 
-                        key: "/admin/events/rejected", 
-                        icon: <DeleteOutlined />, 
-                        label: <Link to="/admin/events/rejected">Sự kiện bị từ chối</Link> 
-                    },
-                ]
+            { 
+                key: "/admin/events", 
+                icon: <CalendarOutlined />, 
+                label: <Link to="/admin/events">Event Management</Link> 
             },
             {
                 key: "content-moderation",
                 icon: <SecurityScanOutlined />,
-                label: "Kiểm duyệt nội dung",
+                label: "Content Moderation",
                 children: [
                     { 
                         key: "/admin/content/descriptions", 
                         icon: <EditOutlined />, 
-                        label: <Link to="/admin/content/descriptions">Mô tả sự kiện</Link> 
+                        label: <Link to="/admin/content/descriptions">Event Descriptions</Link> 
                     },
                     { 
                         key: "/admin/content/feedback", 
                         icon: <MessageOutlined />, 
-                        label: <Link to="/admin/content/feedback">Phản hồi</Link> 
+                        label: <Link to="/admin/content/feedback">Feedback</Link> 
                     },
                     { 
                         key: "/admin/content/media", 
                         icon: <PictureOutlined />, 
-                        label: <Link to="/admin/content/media">Phương tiện</Link> 
+                        label: <Link to="/admin/content/media">Media</Link> 
                     },
                 ]
             },
             { 
                 key: "/admin/notifications", 
                 icon: <NotificationOutlined />, 
-                label: <Link to="/admin/notifications">Thông báo hệ thống</Link> 
+                label: <Link to="/admin/notifications">System Notifications</Link> 
             },
             { 
                 key: "/admin/statistics", 
                 icon: <BarChartOutlined />, 
-                label: <Link to="/admin/statistics">Thống kê tổng quan</Link> 
+                label: <Link to="/admin/statistics">Overview Analytics</Link> 
             },
         ];
     }
 
     // User dropdown menu
+    const dashboardPath = user
+        ? (user.role === 'admin' ? '/admin' : user.role === 'organizer' ? '/organizer/dashboard' : '/dashboard')
+        : '/dashboard';
+
     const userMenu: MenuProps = {
         items: [
+            {
+                key: 'dashboard',
+                icon: <DashboardOutlined />,
+                label: <Link to={dashboardPath}>Dashboard</Link>,
+            },
             {
                 key: 'profile',
                 icon: <UserOutlined />,
                 label: <Link to="/profile">Hồ sơ cá nhân</Link>,
-            },
-            {
-                key: 'settings',
-                icon: <SettingOutlined />,
-                label: <Link to="/settings">Cài đặt</Link>,
             },
             {
                 type: 'divider' as const,
@@ -352,6 +348,59 @@ export default function DashboardLayout() {
         />
     );
 
+    // Top horizontal menu in header
+    const renderTopMenu = () => {
+        // For guests: split into left (navigation) and right (auth) menus
+        if (!user) {
+            const leftItems = menuItems.filter((it: any) => !['/login', '/register'].includes(it?.key));
+            const rightItems = menuItems.filter((it: any) => ['/login', '/register'].includes(it?.key));
+            return (
+                <div style={{ display: 'flex', alignItems: 'center', gap: 12, flex: 1, minWidth: 0 }}>
+                    <Menu
+                        mode="horizontal"
+                        selectedKeys={[location.pathname]}
+                        items={leftItems as any}
+                        className="top-menu"
+                        style={{
+                            background: 'transparent',
+                            borderBottom: 'none',
+                            flex: 1,
+                            minWidth: 0,
+                        }}
+                    />
+                    <Space style={{ marginLeft: 'auto' }}>
+                        <Link to="/login">
+                            <Button type="text" icon={<LoginOutlined />} style={{ color: 'white' }}>
+                                Login
+                            </Button>
+                        </Link>
+                        <Link to="/register">
+                            <Button icon={<UserAddOutlined />} className="bg-white text-blue-600 font-semibold" style={{ border: 'none' }}>
+                                Register
+                            </Button>
+                        </Link>
+                    </Space>
+                </div>
+            );
+        }
+
+        // For logged-in users: single unified menu
+        return (
+            <Menu
+                mode="horizontal"
+                selectedKeys={[location.pathname]}
+                items={menuItems}
+                className="top-menu"
+                style={{
+                    background: 'transparent',
+                    borderBottom: 'none',
+                    flex: 1,
+                    minWidth: 0,
+                }}
+            />
+        );
+    };
+
     const headerStyle = {
         background: 'linear-gradient(135deg, #00afef 0%, #0099d4 50%, #007bb8 100%)',
         padding: '0 24px',
@@ -376,8 +425,8 @@ export default function DashboardLayout() {
         <Layout style={{ minHeight: "100vh" }}>
             {/* Header */}
             <Header style={headerStyle}>
-                <div style={{ display: 'flex', alignItems: 'center' }}>
-                    {!isMobile && (
+                <div style={{ display: 'flex', alignItems: 'center', gap: 12, flex: 1 }}>
+                    {!isMobile && user && user.role !== 'participant' && (
                         <Button
                             type="text"
                             icon={collapsed ? <MenuOutlined /> : <MenuOutlined />}
@@ -409,10 +458,12 @@ export default function DashboardLayout() {
                     >
                         EventSphere
                     </Text>
+                    {/* Top menu for participant and guests on desktop */}
+                    {!isMobile && (user?.role === 'participant' || !user) && renderTopMenu()}
                 </div>
                 
                 {user && (
-                    <Space size="middle">
+                    <Space size="middle" align="center">
                         <Badge count={3} size="small">
                             <Button
                                 type="text"
@@ -420,6 +471,11 @@ export default function DashboardLayout() {
                                 style={{ color: 'white', fontSize: '16px' }}
                             />
                         </Badge>
+                        {!isMobile && (
+                            <Text style={{ color: 'white', opacity: 0.9, fontWeight: 600 }}>
+                                {user.role === 'admin' ? 'Admin' : user.role === 'organizer' ? 'Organizer' : 'Student'}
+                            </Text>
+                        )}
                         <Dropdown menu={userMenu} placement="bottomRight">
                             <Space style={{ cursor: 'pointer', color: 'white' }}>
                                 <Avatar 
@@ -434,10 +490,6 @@ export default function DashboardLayout() {
                                         <div style={{ color: 'white', fontSize: '14px', fontWeight: 600 }}>
                                             {user.fullName || user.username}
                                         </div>
-                                        <div style={{ color: 'rgba(255,255,255,0.8)', fontSize: '12px' }}>
-                                            {user.role === 'admin' ? 'Quản trị viên' : 
-                                             user.role === 'organizer' ? 'Người tổ chức' : 'Sinh viên'}
-                                        </div>
                                     </div>
                                 )}
                             </Space>
@@ -447,8 +499,8 @@ export default function DashboardLayout() {
             </Header>
 
             <Layout>
-                {/* Desktop Sidebar */}
-                {!isMobile && (
+                {/* Desktop Sidebar (hidden for participants and guests) */}
+                {!isMobile && user && user.role !== 'participant' && (
                     <Sider 
                         collapsible 
                         collapsed={collapsed} 
@@ -551,7 +603,7 @@ export default function DashboardLayout() {
                 boxShadow: '0 -4px 20px rgba(0, 175, 239, 0.2)'
             }}>
                 <Text style={{ color: 'white', fontFamily: 'Poppins' }}>
-                    EventSphere ©2025 — Hệ thống quản lý sự kiện trường đại học
+                    EventSphere ©2025 — University Event Management System
                 </Text>
             </Footer>
         </Layout>
