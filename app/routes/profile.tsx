@@ -9,7 +9,12 @@ import {
     Space, 
     Divider,
     Typography,
-    Statistic
+    Statistic,
+    Upload,
+    Modal,
+    List,
+    Tag,
+    Timeline
 } from "antd";
 import { 
     UserOutlined, 
@@ -17,18 +22,26 @@ import {
     EditOutlined,
     CrownOutlined,
     CalendarOutlined,
-    TrophyOutlined
+    TrophyOutlined,
+    UploadOutlined,
+    HistoryOutlined,
+    CheckCircleOutlined,
+    ClockCircleOutlined
 } from "@ant-design/icons";
 import { useAuth } from "../context/AuthContext";
 import { useEvents } from "../context/EventContext";
 import { useNavigate } from "react-router";
+import { useState } from "react";
+import type { UploadProps } from 'antd';
 
 const { Title, Text } = Typography;
 
 export default function ProfilePage() {
-    const { user, logout } = useAuth();
+    const { user, logout, updateProfile } = useAuth();
     const { events } = useEvents();
     const navigate = useNavigate();
+    const [avatarModalVisible, setAvatarModalVisible] = useState(false);
+    const [uploading, setUploading] = useState(false);
 
     if (!user) {
         return (
@@ -61,6 +74,43 @@ export default function ProfilePage() {
         ? events.filter(event => event.organizer === user.username).length 
         : 0;
 
+    // Get user's event participation history
+    const participatedEvents = events.filter(event => 
+        user.registeredEvents?.includes(event.id) && 
+        event.endDate && new Date(event.endDate) < new Date()
+    );
+    const upcomingEvents = events.filter(event => 
+        user.registeredEvents?.includes(event.id) && 
+        event.startDate && new Date(event.startDate) > new Date()
+    );
+
+    const handleAvatarUpload: UploadProps['customRequest'] = (options) => {
+        const { file, onSuccess, onError } = options;
+        setUploading(true);
+
+        // Simulate upload process
+        setTimeout(() => {
+            try {
+                // In a real app, you would upload to a server
+                // For demo, we'll create a local URL
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    const avatarUrl = e.target?.result as string;
+                    updateProfile({ avatar: avatarUrl });
+                    message.success('Avatar updated successfully!');
+                    setAvatarModalVisible(false);
+                    onSuccess?.(avatarUrl);
+                };
+                reader.readAsDataURL(file as File);
+            } catch (error) {
+                message.error('Failed to upload avatar');
+                onError?.(error as Error);
+            } finally {
+                setUploading(false);
+            }
+        }, 1000);
+    };
+
     return (
         <div className="min-h-screen bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50 p-4 lg:p-8">
             <div className="max-w-4xl mx-auto">
@@ -70,11 +120,27 @@ export default function ProfilePage() {
                         <Card className="shadow-lg border-0 overflow-hidden">
                             <div className="bg-gradient-to-r from-blue-500 to-purple-600 -m-6 mb-6 p-8 text-white">
                                 <div className="flex items-center flex-wrap gap-6">
-                                    <Avatar 
-                                        size={120} 
-                                        icon={<UserOutlined />} 
-                                        className="bg-white/20 border-4 border-white/30"
-                                    />
+                                    <div className="relative">
+                                        <Avatar 
+                                            size={120} 
+                                            src={user.avatar}
+                                            icon={<UserOutlined />} 
+                                            className="bg-white/20 border-4 border-white/30 cursor-pointer"
+                                            onClick={() => setAvatarModalVisible(true)}
+                                        />
+                                        <Button
+                                            type="primary"
+                                            shape="circle"
+                                            size="small"
+                                            icon={<EditOutlined />}
+                                            className="absolute bottom-0 right-0"
+                                            style={{ 
+                                                background: 'linear-gradient(135deg, #00afef 0%, #0099d6 100%)',
+                                                border: 'none'
+                                            }}
+                                            onClick={() => setAvatarModalVisible(true)}
+                                        />
+                                    </div>
                                     <div className="flex-1">
                                         <Title level={2} className="text-white mb-2">
                                             {user.username}
@@ -215,7 +281,120 @@ export default function ProfilePage() {
                             </Space>
                         </Card>
                     </Col>
+
+                    {/* Event Participation History */}
+                    <Col span={24}>
+                        <Card 
+                            title={
+                                <Space>
+                                    <HistoryOutlined style={{ color: '#00afef' }} />
+                                    <Text strong style={{ color: '#00afef' }}>Event Participation History</Text>
+                                </Space>
+                            }
+                            className="glass-card"
+                            style={{
+                                background: 'rgba(255, 255, 255, 0.15)',
+                                backdropFilter: 'blur(25px)',
+                                border: '1px solid rgba(0, 175, 239, 0.15)',
+                                borderRadius: '16px'
+                            }}
+                        >
+                            <Timeline
+                                items={[
+                                    ...participatedEvents.map(event => ({
+                                        dot: <CheckCircleOutlined style={{ color: '#52c41a' }} />,
+                                        color: 'green',
+                                        children: (
+                                            <div>
+                                                <Text strong style={{ color: '#00afef' }}>{event.title}</Text>
+                                                <br />
+                                                <Text type="secondary">
+                                                    Completed on {event.endDate ? new Date(event.endDate).toLocaleDateString() : 'N/A'}
+                                                </Text>
+                                                <br />
+                                                <Tag color="success" style={{ marginTop: 4 }}>Participated</Tag>
+                                            </div>
+                                        )
+                                    })),
+                                    ...upcomingEvents.map(event => ({
+                                        dot: <ClockCircleOutlined style={{ color: '#00afef' }} />,
+                                        color: 'blue',
+                                        children: (
+                                            <div>
+                                                <Text strong style={{ color: '#00afef' }}>{event.title}</Text>
+                                                <br />
+                                                <Text type="secondary">
+                                                    Scheduled for {event.startDate ? new Date(event.startDate).toLocaleDateString() : 'N/A'}
+                                                </Text>
+                                                <br />
+                                                <Tag color="processing" style={{ marginTop: 4 }}>Registered</Tag>
+                                            </div>
+                                        )
+                                    }))
+                                ]}
+                            />
+                            {participatedEvents.length === 0 && upcomingEvents.length === 0 && (
+                                <div style={{ textAlign: 'center', padding: '40px' }}>
+                                    <CalendarOutlined style={{ fontSize: '48px', color: '#d9d9d9', marginBottom: '16px' }} />
+                                    <Text type="secondary">No event participation history yet.</Text>
+                                    <br />
+                                    <Button 
+                                        type="primary" 
+                                        style={{ 
+                                            background: 'linear-gradient(135deg, #00afef 0%, #0099d6 100%)',
+                                            border: 'none',
+                                            marginTop: '16px'
+                                        }}
+                                        onClick={() => navigate('/')}
+                                    >
+                                        Browse Events
+                                    </Button>
+                                </div>
+                            )}
+                        </Card>
+                    </Col>
                 </Row>
+
+                {/* Avatar Upload Modal */}
+                <Modal
+                    title="Update Profile Picture"
+                    open={avatarModalVisible}
+                    onCancel={() => setAvatarModalVisible(false)}
+                    footer={null}
+                    centered
+                >
+                    <div style={{ textAlign: 'center', padding: '20px' }}>
+                        <Avatar 
+                            size={120} 
+                            src={user.avatar}
+                            icon={<UserOutlined />} 
+                            style={{ marginBottom: '20px' }}
+                        />
+                        <br />
+                        <Upload
+                            customRequest={handleAvatarUpload}
+                            showUploadList={false}
+                            accept="image/*"
+                        >
+                            <Button 
+                                icon={<UploadOutlined />} 
+                                loading={uploading}
+                                style={{
+                                    background: 'linear-gradient(135deg, #00afef 0%, #0099d6 100%)',
+                                    border: 'none',
+                                    color: 'white'
+                                }}
+                            >
+                                {uploading ? 'Uploading...' : 'Choose New Picture'}
+                            </Button>
+                        </Upload>
+                        <div style={{ marginTop: '16px' }}>
+                            <Text type="secondary" style={{ fontSize: '12px' }}>
+                                Supported formats: JPG, PNG, GIF (Max 5MB)
+                            </Text>
+                        </div>
+                    </div>
+                </Modal>
             </div>
         </div>
     );

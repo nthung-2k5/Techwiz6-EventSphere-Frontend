@@ -1,7 +1,7 @@
 import { Card, Row, Col, Typography, Statistic, List, Tag, Space, Button, Empty } from "antd";
 import { useAuth } from "../context/AuthContext";
 import { useEvents } from "../context/EventContext";
-import { Link } from "react-router";
+import { Link, Navigate } from "react-router";
 import {
     CalendarOutlined,
     UserOutlined,
@@ -19,11 +19,7 @@ export default function DashboardHome() {
     const { events } = useEvents();
 
     if (!user) {
-        return (
-            <div style={{ textAlign: 'center', padding: '4rem' }}>
-                <Title level={3}>Please log in to view your dashboard</Title>
-            </div>
-        );
+        return <Navigate to="/" replace />;
     }
 
     const userEvents = events.filter(event => user.registeredEvents.includes(event.id));

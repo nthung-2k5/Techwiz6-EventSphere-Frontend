@@ -180,15 +180,17 @@ export default function DashboardLayout() {
     );
 
     const headerStyle = {
-        background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-        padding: '0 24px',
+        background: 'linear-gradient(135deg, #3b82f6 0%, #8b5cf6 50%, #6366f1 100%)',
+        padding: '0 32px',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'space-between',
-        boxShadow: '0 2px 8px rgba(0,0,0,0.15)',
+        boxShadow: '0 8px 32px rgba(59, 130, 246, 0.3)',
         position: 'sticky' as const,
         top: 0,
         zIndex: 1000,
+        backdropFilter: 'blur(16px)',
+        borderBottom: '1px solid rgba(255, 255, 255, 0.1)',
     };
 
     return (
@@ -235,9 +237,12 @@ export default function DashboardLayout() {
                             strong 
                             style={{ 
                                 color: 'white', 
-                                fontSize: '24px', 
+                                fontSize: '28px', 
                                 marginRight: '48px',
-                                fontWeight: 700
+                                fontWeight: 800,
+                                fontFamily: 'Poppins',
+                                textShadow: '0 2px 4px rgba(0,0,0,0.2)',
+                                letterSpacing: '-0.5px'
                             }}
                         >
                             EventSphere
@@ -285,11 +290,14 @@ export default function DashboardLayout() {
 
             <Layout>
                 <Content style={{ 
-                    margin: isMobile ? '16px' : '24px 48px', 
-                    padding: isMobile ? '16px' : '24px', 
-                    background: '#fff',
-                    borderRadius: '8px',
-                    minHeight: 'calc(100vh - 140px)'
+                    margin: isMobile ? '20px' : '32px 48px', 
+                    padding: isMobile ? '20px' : '32px', 
+                    background: 'linear-gradient(135deg, rgba(255,255,255,0.9) 0%, rgba(248,250,252,0.9) 100%)',
+                    backdropFilter: 'blur(16px)',
+                    borderRadius: '24px',
+                    minHeight: 'calc(100vh - 160px)',
+                    boxShadow: '0 20px 40px rgba(0,0,0,0.1)',
+                    border: '1px solid rgba(255,255,255,0.2)'
                 }}>
                     <Outlet />
                 </Content>
@@ -297,11 +305,16 @@ export default function DashboardLayout() {
 
             <Footer style={{ 
                 textAlign: 'center', 
-                background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)', 
+                background: 'linear-gradient(135deg, #3b82f6 0%, #8b5cf6 50%, #6366f1 100%)', 
                 color: 'white',
-                fontWeight: 500
+                fontWeight: 600,
+                fontSize: '16px',
+                padding: '24px',
+                boxShadow: '0 -4px 20px rgba(59, 130, 246, 0.2)'
             }}>
-                EventSphere ©2025 — University Event Management System
+                <Text style={{ color: 'white', fontFamily: 'Poppins' }}>
+                    EventSphere ©2025 — University Event Management System
+                </Text>
             </Footer>
         </Layout>
     );
