@@ -1,6 +1,5 @@
-import { useParams, useNavigate } from "react-router";
-import { useEvents } from "../context/EventContext";
-import { useAuth } from "../context/AuthContext";
+import { useNavigate, useParams } from "react-router";
+import type { Route } from "./+types/events.$id";
 import { 
     Card, 
     Typography, 
@@ -10,7 +9,9 @@ import {
     Col, 
     Tag, 
     Space, 
-    Divider
+    Divider,
+    Modal,
+    Tabs
 } from "antd";
 import { 
     CalendarOutlined, 
@@ -18,8 +19,17 @@ import {
     EnvironmentOutlined, 
     UserOutlined,
     ArrowLeftOutlined,
-    CheckCircleOutlined
+    CheckCircleOutlined,
+    QrcodeOutlined,
+    TrophyOutlined,
+    MessageOutlined
 } from "@ant-design/icons";
+import { useEvents } from "../context/EventContext";
+import { useAuth } from "../context/AuthContext";
+import QRCodeGenerator from "../components/QRCodeGenerator";
+import CertificateGenerator from "../components/CertificateGenerator";
+import FeedbackSystem from "../components/FeedbackSystem";
+import { useState, useEffect } from "react";
 
 const { Title, Paragraph } = Typography;
 
@@ -28,8 +38,21 @@ export default function EventDetailPage() {
     const { events } = useEvents();
     const { user, registerEvent } = useAuth();
     const navigate = useNavigate();
+    const [qrModalVisible, setQrModalVisible] = useState(false);
+    const [certificateModalVisible, setCertificateModalVisible] = useState(false);
+    const [feedbacks, setFeedbacks] = useState([]);
 
     const event = events.find((e) => e.id === Number(id));
+
+    // Load feedbacks for this event
+    useEffect(() => {
+        if (event) {
+            const storedFeedbacks = localStorage.getItem(`feedbacks-${event.id}`);
+            if (storedFeedbacks) {
+                setFeedbacks(JSON.parse(storedFeedbacks));
+            }
+        }
+    }, [event]);
 
     if (!event) {
         return (
@@ -53,11 +76,19 @@ export default function EventDetailPage() {
     }
 
     const alreadyRegistered = user?.registeredEvents?.includes(event.id) ?? false;
+    const isEventCompleted = event.endDate && new Date(event.endDate) < new Date();
+    const isEventOngoing = event.startDate && event.endDate && 
+        new Date(event.startDate) <= new Date() && new Date(event.endDate) >= new Date();
+    const canProvideFeedback = alreadyRegistered && (isEventOngoing || isEventCompleted);
 
     const handleRegister = () => {
         if (!user) {
             message.warning("Please login to register.");
             navigate("/login");
+            return;
+        }
+        if (user.role !== "participant") {
+            message.warning("Only participants can register for events.");
             return;
         }
         if (alreadyRegistered) {
@@ -184,11 +215,50 @@ export default function EventDetailPage() {
                                             size="large"
                                             block
                                             onClick={handleRegister}
-                                            className="bg-gradient-to-r from-blue-500 to-purple-600 border-none h-12 text-lg font-semibold"
+                                            style={{
+                                                background: 'linear-gradient(135deg, #00afef 0%, #0099d6 100%)',
+                                                border: 'none',
+                                                height: '48px',
+                                                fontSize: '16px',
+                                                fontWeight: '600'
+                                            }}
                                         >
                                             Register Now
                                         </Button>
                                     </div>
+                                )}
+
+                                {/* QR Code and Certificate Actions for Registered Users */}
+                                {alreadyRegistered && (
+                                    <Space direction="vertical" style={{ width: '100%', marginTop: '16px' }}>
+                                        <Button
+                                            icon={<QrcodeOutlined />}
+                                            block
+                                            onClick={() => setQrModalVisible(true)}
+                                            style={{
+                                                background: 'linear-gradient(135deg, rgba(0, 175, 239, 0.1) 0%, rgba(0, 175, 239, 0.05) 100%)',
+                                                borderColor: '#00afef',
+                                                color: '#00afef'
+                                            }}
+                                        >
+                                            Get QR Code for Check-in
+                                        </Button>
+                                        
+                                        {isEventCompleted && (
+                                            <Button
+                                                icon={<TrophyOutlined />}
+                                                block
+                                                onClick={() => setCertificateModalVisible(true)}
+                                                style={{
+                                                    background: 'linear-gradient(135deg, #52c41a 0%, #389e0d 100%)',
+                                                    border: 'none',
+                                                    color: 'white'
+                                                }}
+                                            >
+                                                Get Certificate
+                                            </Button>
+                                        )}
+                                    </Space>
                                 )}
 
                                 <Divider />
@@ -230,7 +300,59 @@ export default function EventDetailPage() {
                             </Card>
                         )}
                     </Col>
+
+                    {/* Feedback Section */}
+                    <Col span={24}>
+                        <FeedbackSystem
+                            eventId={event.id}
+                            eventTitle={event.title}
+                            userId={user?.username || ''}
+                            userName={user?.fullName || user?.username || ''}
+                            canSubmitFeedback={!!canProvideFeedback}
+                            existingFeedbacks={feedbacks}
+                        />
+                    </Col>
                 </Row>
+
+                {/* QR Code Modal */}
+                <Modal
+                    title="Event Check-in QR Code"
+                    open={qrModalVisible}
+                    onCancel={() => setQrModalVisible(false)}
+                    footer={null}
+                    centered
+                    width={500}
+                >
+                    {user && (
+                        <QRCodeGenerator
+                            eventId={event.id}
+                            userId={user.username}
+                            eventTitle={event.title}
+                            registrationId={`${event.id}-${user.username}-${Date.now()}`}
+                        />
+                    )}
+                </Modal>
+
+                {/* Certificate Modal */}
+                <Modal
+                    title="Event Certificate"
+                    open={certificateModalVisible}
+                    onCancel={() => setCertificateModalVisible(false)}
+                    footer={null}
+                    centered
+                    width={900}
+                >
+                    {user && isEventCompleted && (
+                        <CertificateGenerator
+                            eventTitle={event.title}
+                            participantName={user.fullName || user.username}
+                            eventDate={event.startDate || event.date || ''}
+                            eventDuration={event.startTime && event.endTime ? `${event.startTime} - ${event.endTime}` : undefined}
+                            organizerName={event.organizer}
+                            certificateId={`CERT-${event.id}-${user.username}-${new Date().getFullYear()}`}
+                        />
+                    )}
+                </Modal>
             </div>
         </div>
     );

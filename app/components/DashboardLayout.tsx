@@ -1,4 +1,4 @@
-import { Layout, Menu, Button, Dropdown, Avatar, Space, Typography, Drawer } from "antd";
+import { Layout, Menu, Button, Dropdown, Avatar, Space, Typography, Drawer, Badge } from "antd";
 import { useState, useEffect } from "react";
 import {
     HomeOutlined,
@@ -18,12 +18,26 @@ import {
     MenuOutlined,
     BellOutlined,
     SettingOutlined,
+    PictureOutlined,
+    InfoCircleOutlined,
+    PhoneOutlined,
+    QuestionCircleOutlined,
+    BarChartOutlined,
+    SafetyOutlined,
+    CheckCircleOutlined,
+    EditOutlined,
+    DeleteOutlined,
+    EyeOutlined,
+    MessageOutlined,
+    NotificationOutlined,
+    CrownOutlined,
+    SecurityScanOutlined,
 } from "@ant-design/icons";
 import { Link, Outlet, useLocation } from "react-router";
 import { useAuth } from "../context/AuthContext";
 import type { MenuProps } from "antd";
 
-const { Header, Content, Footer } = Layout;
+const { Header, Content, Footer, Sider } = Layout;
 const { Text } = Typography;
 
 type MenuItem = Required<MenuProps>['items'][number];
@@ -31,6 +45,7 @@ type MenuItem = Required<MenuProps>['items'][number];
 export default function DashboardLayout() {
     const location = useLocation();
     const { user, logout } = useAuth();
+    const [collapsed, setCollapsed] = useState(false);
     const [mobileDrawerOpen, setMobileDrawerOpen] = useState(false);
     const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
 
@@ -53,10 +68,44 @@ export default function DashboardLayout() {
                 icon: <HomeOutlined />, 
                 label: <Link to="/">Home</Link> 
             },
-            { 
-                key: "/events", 
-                icon: <CalendarOutlined />, 
-                label: <Link to="/events">Events</Link> 
+            {
+                key: "events-public",
+                icon: <CalendarOutlined />,
+                label: "Events",
+                children: [
+                    { 
+                        key: "/events", 
+                        icon: <CalendarOutlined />, 
+                        label: <Link to="/events">Events</Link> 
+                    },
+                    { 
+                        key: "/media-gallery", 
+                        icon: <PictureOutlined />, 
+                        label: <Link to="/media-gallery">Media Gallery</Link> 
+                    },
+                ]
+            },
+            {
+                key: "info",
+                icon: <InfoCircleOutlined />,
+                label: "Info",
+                children: [
+                    { 
+                        key: "/about", 
+                        icon: <InfoCircleOutlined />, 
+                        label: <Link to="/about">About</Link> 
+                    },
+                    { 
+                        key: "/contact", 
+                        icon: <PhoneOutlined />, 
+                        label: <Link to="/contact">Contact</Link> 
+                    },
+                    { 
+                        key: "/faq", 
+                        icon: <QuestionCircleOutlined />, 
+                        label: <Link to="/faq">FAQ</Link> 
+                    },
+                ]
             },
             { 
                 key: "/login", 
@@ -66,43 +115,77 @@ export default function DashboardLayout() {
             { 
                 key: "/register", 
                 icon: <UserAddOutlined />, 
-                label: <Link to="/register">Sign Up</Link> 
+                label: <Link to="/register">Register</Link> 
             },
         ];
     } else if (user.role === "participant") {
         menuItems = [
             { 
-                key: "/dashboard", 
-                icon: <DashboardOutlined />, 
-                label: <Link to="/dashboard">Dashboard</Link> 
+                key: "/", 
+                icon: <HomeOutlined />, 
+                label: <Link to="/">Home</Link> 
             },
-            { 
-                key: "/events", 
-                icon: <CalendarOutlined />, 
-                label: <Link to="/events">Browse Events</Link> 
+            {
+                key: "events-group",
+                icon: <AppstoreOutlined />,
+                label: "Events",
+                children: [
+                    { 
+                        key: "/events", 
+                        icon: <CalendarOutlined />, 
+                        label: <Link to="/events">Events</Link> 
+                    },
+                    { 
+                        key: "/checkin", 
+                        icon: <QrcodeOutlined />, 
+                        label: <Link to="/checkin">QR Check-in</Link> 
+                    },
+                    { 
+                        key: "/certificate", 
+                        icon: <FileDoneOutlined />, 
+                        label: <Link to="/certificate">Certificates</Link> 
+                    },
+                    { 
+                        key: "/media-gallery", 
+                        icon: <PictureOutlined />, 
+                        label: <Link to="/media-gallery">Media Gallery</Link> 
+                    },
+                ]
             },
-            { 
-                key: "/checkin", 
-                icon: <QrcodeOutlined />, 
-                label: <Link to="/checkin">Check-in</Link> 
-            },
-            { 
-                key: "/certificate", 
-                icon: <FileDoneOutlined />, 
-                label: <Link to="/certificate">Certificates</Link> 
-            },
-            { 
-                key: "/feedback", 
-                icon: <FormOutlined />, 
-                label: <Link to="/feedback">Feedback</Link> 
+            {
+                key: "about-me",
+                icon: <UserOutlined />,
+                label: "About Me",
+                children: [
+                    { 
+                        key: "/about", 
+                        icon: <InfoCircleOutlined />, 
+                        label: <Link to="/about">About</Link> 
+                    },
+                    { 
+                        key: "/contact", 
+                        icon: <PhoneOutlined />, 
+                        label: <Link to="/contact">Contact</Link> 
+                    },
+                    { 
+                        key: "/feedback", 
+                        icon: <FormOutlined />, 
+                        label: <Link to="/feedback">Feedback</Link> 
+                    },
+                ]
             },
         ];
     } else if (user.role === "organizer") {
         menuItems = [
             { 
-                key: "/dashboard", 
+                key: "/", 
+                icon: <HomeOutlined />, 
+                label: <Link to="/">Trang chủ</Link> 
+            },
+            { 
+                key: "/organizer/dashboard", 
                 icon: <DashboardOutlined />, 
-                label: <Link to="/dashboard">Dashboard</Link> 
+                label: <Link to="/organizer/dashboard">Dashboard</Link> 
             },
             {
                 key: "events-management",
@@ -110,47 +193,133 @@ export default function DashboardLayout() {
                 label: "Event Management",
                 children: [
                     { 
-                        key: "/event/create", 
+                        key: "/organizer/events", 
+                        icon: <EyeOutlined />, 
+                        label: <Link to="/organizer/events">Event Overview</Link> 
+                    },
+                    { 
+                        key: "/organizer/event/create", 
                         icon: <PlusOutlined />, 
-                        label: <Link to="/event/create">Create Event</Link> 
+                        label: <Link to="/organizer/event/create">Create Event</Link> 
                     },
                     { 
-                        key: "/event/submit", 
-                        icon: <AppstoreOutlined />, 
-                        label: <Link to="/event/submit">Submit for Approval</Link> 
+                        key: "/organizer/event/edit", 
+                        icon: <EditOutlined />, 
+                        label: <Link to="/organizer/event/edit">Edit Event</Link> 
                     },
                     { 
-                        key: "/event/registrations", 
+                        key: "/organizer/registrations", 
                         icon: <TeamOutlined />, 
-                        label: <Link to="/event/registrations">Registrations</Link> 
-                    },
-                    { 
-                        key: "/event/media", 
-                        icon: <UploadOutlined />, 
-                        label: <Link to="/event/media">Upload Media</Link> 
-                    },
-                    { 
-                        key: "/event/certificates", 
-                        icon: <FileDoneOutlined />, 
-                        label: <Link to="/event/certificates">Certificates</Link> 
+                        label: <Link to="/organizer/registrations">Registrations</Link> 
                     },
                 ]
+            },
+            {
+                key: "media-management",
+                icon: <PictureOutlined />,
+                label: "Media Management",
+                children: [
+                    { 
+                        key: "/organizer/media/upload", 
+                        icon: <UploadOutlined />, 
+                        label: <Link to="/organizer/media/upload">Upload Media</Link> 
+                    },
+                    { 
+                        key: "/organizer/media/gallery", 
+                        icon: <PictureOutlined />, 
+                        label: <Link to="/organizer/media/gallery">Gallery</Link> 
+                    },
+                ]
+            },
+            { 
+                key: "/organizer/certificates", 
+                icon: <FileDoneOutlined />, 
+                label: <Link to="/organizer/certificates">Certificates</Link> 
+            },
+            { 
+                key: "/organizer/notifications", 
+                icon: <NotificationOutlined />, 
+                label: <Link to="/organizer/notifications">Notifications</Link> 
+            },
+            { 
+                key: "/organizer/statistics", 
+                icon: <BarChartOutlined />, 
+                label: <Link to="/organizer/statistics">Analytics</Link> 
+            },
+        ];
+    } else if (user.role === "admin") {
+        menuItems = [
+            { 
+                key: "/", 
+                icon: <HomeOutlined />, 
+                label: <Link to="/">Trang chủ</Link> 
+            },
+            { 
+                key: "/admin", 
+                icon: <CrownOutlined />, 
+                label: <Link to="/admin">Admin Dashboard</Link> 
+            },
+            { 
+                key: "/admin/users", 
+                icon: <UserOutlined />, 
+                label: <Link to="/admin/users">User Management</Link> 
+            },
+            { 
+                key: "/admin/events", 
+                icon: <CalendarOutlined />, 
+                label: <Link to="/admin/events">Event Management</Link> 
+            },
+            {
+                key: "content-moderation",
+                icon: <SecurityScanOutlined />,
+                label: "Content Moderation",
+                children: [
+                    { 
+                        key: "/admin/content/descriptions", 
+                        icon: <EditOutlined />, 
+                        label: <Link to="/admin/content/descriptions">Event Descriptions</Link> 
+                    },
+                    { 
+                        key: "/admin/content/feedback", 
+                        icon: <MessageOutlined />, 
+                        label: <Link to="/admin/content/feedback">Feedback</Link> 
+                    },
+                    { 
+                        key: "/admin/content/media", 
+                        icon: <PictureOutlined />, 
+                        label: <Link to="/admin/content/media">Media</Link> 
+                    },
+                ]
+            },
+            { 
+                key: "/admin/notifications", 
+                icon: <NotificationOutlined />, 
+                label: <Link to="/admin/notifications">System Notifications</Link> 
+            },
+            { 
+                key: "/admin/statistics", 
+                icon: <BarChartOutlined />, 
+                label: <Link to="/admin/statistics">Overview Analytics</Link> 
             },
         ];
     }
 
     // User dropdown menu
+    const dashboardPath = user
+        ? (user.role === 'admin' ? '/admin' : user.role === 'organizer' ? '/organizer/dashboard' : '/dashboard')
+        : '/dashboard';
+
     const userMenu: MenuProps = {
         items: [
+            {
+                key: 'dashboard',
+                icon: <DashboardOutlined />,
+                label: <Link to={dashboardPath}>Dashboard</Link>,
+            },
             {
                 key: 'profile',
                 icon: <UserOutlined />,
                 label: <Link to="/profile">Profile</Link>,
-            },
-            {
-                key: 'settings',
-                icon: <SettingOutlined />,
-                label: <Link to="/settings">Settings</Link>,
             },
             {
                 type: 'divider' as const,
@@ -164,14 +333,14 @@ export default function DashboardLayout() {
         ],
     };
 
-    const renderMenu = (mode: "horizontal" | "vertical" = "horizontal") => (
+    const renderSidebarMenu = () => (
         <Menu
-            theme={mode === "horizontal" ? "dark" : "light"}
-            mode={mode}
+            theme="light"
+            mode="inline"
             selectedKeys={[location.pathname]}
             items={menuItems}
             style={{
-                background: mode === "horizontal" ? "transparent" : "#fff",
+                background: "transparent",
                 border: "none",
                 fontSize: "14px",
                 fontWeight: 500,
@@ -179,117 +348,246 @@ export default function DashboardLayout() {
         />
     );
 
+    // Top horizontal menu in header
+    const renderTopMenu = () => {
+        // For guests: split into left (navigation) and right (auth) menus
+        if (!user) {
+            const leftItems = menuItems.filter((it: any) => !['/login', '/register'].includes(it?.key));
+            const rightItems = menuItems.filter((it: any) => ['/login', '/register'].includes(it?.key));
+            return (
+                <div style={{ display: 'flex', alignItems: 'center', gap: 12, flex: 1, minWidth: 0 }}>
+                    <Menu
+                        mode="horizontal"
+                        selectedKeys={[location.pathname]}
+                        items={leftItems as any}
+                        className="top-menu"
+                        style={{
+                            background: 'transparent',
+                            borderBottom: 'none',
+                            flex: 1,
+                            minWidth: 0,
+                        }}
+                    />
+                    <Space style={{ marginLeft: 'auto' }}>
+                        <Link to="/login">
+                            <Button type="text" icon={<LoginOutlined />} style={{ color: 'white' }}>
+                                Login
+                            </Button>
+                        </Link>
+                        <Link to="/register">
+                            <Button icon={<UserAddOutlined />} className="bg-white text-blue-600 font-semibold" style={{ border: 'none' }}>
+                                Register
+                            </Button>
+                        </Link>
+                    </Space>
+                </div>
+            );
+        }
+
+        // For logged-in users: single unified menu
+        return (
+            <Menu
+                mode="horizontal"
+                selectedKeys={[location.pathname]}
+                items={menuItems}
+                className="top-menu"
+                style={{
+                    background: 'transparent',
+                    borderBottom: 'none',
+                    flex: 1,
+                    minWidth: 0,
+                }}
+            />
+        );
+    };
+
     const headerStyle = {
-        background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+        background: 'linear-gradient(135deg, #00afef 0%, #0099d4 50%, #007bb8 100%)',
         padding: '0 24px',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'space-between',
-        boxShadow: '0 2px 8px rgba(0,0,0,0.15)',
+        boxShadow: '0 4px 20px rgba(0, 175, 239, 0.3)',
         position: 'sticky' as const,
         top: 0,
         zIndex: 1000,
+        height: '64px',
+    };
+
+    const siderStyle = {
+        background: 'linear-gradient(180deg, rgba(255,255,255,0.95) 0%, rgba(248,250,252,0.95) 100%)',
+        backdropFilter: 'blur(16px)',
+        borderRight: '1px solid rgba(0, 175, 239, 0.1)',
+        boxShadow: '4px 0 20px rgba(0, 175, 239, 0.1)',
     };
 
     return (
         <Layout style={{ minHeight: "100vh" }}>
-            {/* Mobile Header */}
-            {isMobile ? (
-                <Header style={headerStyle}>
-                    <div style={{ display: 'flex', alignItems: 'center' }}>
+            {/* Header */}
+            <Header style={headerStyle}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 12, flex: 1 }}>
+                    {!isMobile && user && user.role !== 'participant' && (
+                        <Button
+                            type="text"
+                            icon={collapsed ? <MenuOutlined /> : <MenuOutlined />}
+                            onClick={() => setCollapsed(!collapsed)}
+                            style={{ 
+                                color: 'white', 
+                                marginRight: '16px',
+                                fontSize: '16px'
+                            }}
+                        />
+                    )}
+                    {isMobile && (
                         <Button
                             type="text"
                             icon={<MenuOutlined />}
                             onClick={() => setMobileDrawerOpen(true)}
                             style={{ color: 'white', marginRight: '16px' }}
                         />
-                        <Text strong style={{ color: 'white', fontSize: '20px' }}>
-                            EventSphere
-                        </Text>
-                    </div>
-                    
-                    {user && (
-                        <Space>
+                    )}
+                    <Text 
+                        strong 
+                        style={{ 
+                            color: 'white', 
+                            fontSize: isMobile ? '20px' : '24px',
+                            fontWeight: 700,
+                            fontFamily: 'Poppins',
+                            textShadow: '0 2px 4px rgba(0,0,0,0.2)',
+                        }}
+                    >
+                        EventSphere
+                    </Text>
+                    {/* Top menu for participant and guests on desktop */}
+                    {!isMobile && (user?.role === 'participant' || !user) && renderTopMenu()}
+                </div>
+                
+                {user && (
+                    <Space size="middle" align="center">
+                        <Badge count={3} size="small">
                             <Button
                                 type="text"
                                 icon={<BellOutlined />}
-                                style={{ color: 'white' }}
+                                style={{ color: 'white', fontSize: '16px' }}
                             />
-                            <Dropdown menu={userMenu} placement="bottomRight">
+                        </Badge>
+                        {!isMobile && (
+                            <Text style={{ color: 'white', opacity: 0.9, fontWeight: 600 }}>
+                                {user.role === 'admin' ? 'Admin' : user.role === 'organizer' ? 'Organizer' : 'Student'}
+                            </Text>
+                        )}
+                        <Dropdown menu={userMenu} placement="bottomRight">
+                            <Space style={{ cursor: 'pointer', color: 'white' }}>
                                 <Avatar 
+                                    src={user.avatar}
                                     style={{ 
                                         backgroundColor: 'rgba(255,255,255,0.2)',
-                                        cursor: 'pointer'
                                     }}
                                     icon={<UserOutlined />}
                                 />
-                            </Dropdown>
-                        </Space>
-                    )}
-                </Header>
-            ) : (
-                /* Desktop Header */
-                <Header style={headerStyle}>
-                    <div style={{ display: 'flex', alignItems: 'center', flex: 1 }}>
-                        <Text 
-                            strong 
-                            style={{ 
-                                color: 'white', 
-                                fontSize: '24px', 
-                                marginRight: '48px',
-                                fontWeight: 700
-                            }}
-                        >
-                            EventSphere
-                        </Text>
-                        <div style={{ flex: 1 }}>
-                            {renderMenu("horizontal")}
-                        </div>
-                    </div>
-                    
-                    {user && (
-                        <Space size="middle">
-                            <Button
-                                type="text"
-                                icon={<BellOutlined />}
-                                style={{ color: 'white' }}
-                            />
-                            <Dropdown menu={userMenu} placement="bottomRight">
-                                <Space style={{ cursor: 'pointer', color: 'white' }}>
-                                    <Avatar 
-                                        style={{ 
-                                            backgroundColor: 'rgba(255,255,255,0.2)',
-                                        }}
-                                        icon={<UserOutlined />}
-                                    />
-                                    <Text style={{ color: 'white' }}>
-                                        {user.username}
-                                    </Text>
-                                </Space>
-                            </Dropdown>
-                        </Space>
-                    )}
-                </Header>
-            )}
-
-            {/* Mobile Drawer */}
-            <Drawer
-                title="Navigation"
-                placement="left"
-                onClose={() => setMobileDrawerOpen(false)}
-                open={mobileDrawerOpen}
-                bodyStyle={{ padding: 0 }}
-            >
-                {renderMenu("vertical")}
-            </Drawer>
+                                {!isMobile && (
+                                    <div style={{ textAlign: 'left' }}>
+                                        <div style={{ color: 'white', fontSize: '14px', fontWeight: 600 }}>
+                                            {user.fullName || user.username}
+                                        </div>
+                                    </div>
+                                )}
+                            </Space>
+                        </Dropdown>
+                    </Space>
+                )}
+            </Header>
 
             <Layout>
+                {/* Desktop Sidebar (hidden for participants and guests) */}
+                {!isMobile && user && user.role !== 'participant' && (
+                    <Sider 
+                        collapsible 
+                        collapsed={collapsed} 
+                        onCollapse={setCollapsed}
+                        width={280}
+                        collapsedWidth={80}
+                        style={siderStyle}
+                        trigger={null}
+                    >
+                        <div style={{ 
+                            padding: '20px 16px',
+                            borderBottom: '1px solid rgba(0, 175, 239, 0.1)',
+                            textAlign: collapsed ? 'center' : 'left'
+                        }}>
+                            {!collapsed && user && (
+                                <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                                    <Avatar 
+                                        size={48}
+                                        src={user.avatar}
+                                        style={{ backgroundColor: '#00afef' }}
+                                        icon={<UserOutlined />}
+                                    />
+                                    <div>
+                                        <div style={{ fontWeight: 600, color: '#1f2937', fontSize: '14px' }}>
+                                            {user.fullName || user.username}
+                                        </div>
+                                        <div style={{ color: '#6b7280', fontSize: '12px' }}>
+                                            {user.department}
+                                        </div>
+                                    </div>
+                                </div>
+                            )}
+                            {collapsed && user && (
+                                <Avatar 
+                                    size={40}
+                                    src={user.avatar}
+                                    style={{ backgroundColor: '#00afef' }}
+                                    icon={<UserOutlined />}
+                                />
+                            )}
+                        </div>
+                        <div style={{ padding: '16px 0' }}>
+                            {renderSidebarMenu()}
+                        </div>
+                    </Sider>
+                )}
+
+                {/* Mobile Drawer */}
+                <Drawer
+                    title={
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                            <Avatar 
+                                src={user?.avatar}
+                                style={{ backgroundColor: '#00afef' }}
+                                icon={<UserOutlined />}
+                            />
+                            {user && (
+                                <div>
+                                    <div style={{ fontWeight: 600, fontSize: '14px' }}>
+                                        {user.fullName || user.username}
+                                    </div>
+                                    <div style={{ color: '#6b7280', fontSize: '12px' }}>
+                                        {user.department}
+                                    </div>
+                                </div>
+                            )}
+                        </div>
+                    }
+                    placement="left"
+                    onClose={() => setMobileDrawerOpen(false)}
+                    open={mobileDrawerOpen}
+                    bodyStyle={{ padding: 0 }}
+                    width={280}
+                >
+                    {renderSidebarMenu()}
+                </Drawer>
+
                 <Content style={{ 
-                    margin: isMobile ? '16px' : '24px 48px', 
+                    margin: isMobile ? '16px' : '24px', 
                     padding: isMobile ? '16px' : '24px', 
-                    background: '#fff',
-                    borderRadius: '8px',
-                    minHeight: 'calc(100vh - 140px)'
+                    background: 'linear-gradient(135deg, rgba(255,255,255,0.95) 0%, rgba(248,250,252,0.95) 100%)',
+                    backdropFilter: 'blur(16px)',
+                    borderRadius: '16px',
+                    minHeight: 'calc(100vh - 112px)',
+                    boxShadow: '0 8px 32px rgba(0, 175, 239, 0.1)',
+                    border: '1px solid rgba(255,255,255,0.2)',
+                    overflow: 'auto'
                 }}>
                     <Outlet />
                 </Content>
@@ -297,11 +595,16 @@ export default function DashboardLayout() {
 
             <Footer style={{ 
                 textAlign: 'center', 
-                background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)', 
+                background: 'linear-gradient(135deg, #00afef 0%, #0099d4 50%, #007bb8 100%)', 
                 color: 'white',
-                fontWeight: 500
+                fontWeight: 600,
+                fontSize: '14px',
+                padding: '16px 24px',
+                boxShadow: '0 -4px 20px rgba(0, 175, 239, 0.2)'
             }}>
-                EventSphere ©2025 — University Event Management System
+                <Text style={{ color: 'white', fontFamily: 'Poppins' }}>
+                    EventSphere ©2025 — University Event Management System
+                </Text>
             </Footer>
         </Layout>
     );

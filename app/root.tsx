@@ -5,15 +5,17 @@ import {
     Scripts,
     ScrollRestoration,
 } from "react-router";
-  
-  import type { Route } from "./+types/root";
-  import "./app.css";
-  import "antd/dist/reset.css";
-  import "@ant-design/v5-patch-for-react-19";
-  import DashboardLayout from "./components/DashboardLayout";
-  import { AuthProvider } from "./context/AuthContext";
+import { ConfigProvider } from "antd";
+
+import type { Route } from "./+types/root";
+import "./app.css";
+import "antd/dist/reset.css";
+import "@ant-design/v5-patch-for-react-19";
+import DashboardLayout from "./components/DashboardLayout";
+import { AuthProvider } from "./context/AuthContext";
 import { EventProvider } from "./context/EventContext";
-  
+import { antdTheme } from "./theme/antd-theme";
+
 export const links: Route.LinksFunction = () => [
     { rel: "preconnect", href: "https://fonts.googleapis.com" },
     {
@@ -48,11 +50,13 @@ export function Layout({ children }: { children: React.ReactNode }) {
  
 export default function App() {
     return (
-        <AuthProvider>
-        <EventProvider>
-          <DashboardLayout />
-        </EventProvider>
-      </AuthProvider>
+        <ConfigProvider theme={antdTheme}>
+            <AuthProvider>
+                <EventProvider>
+                    <DashboardLayout />
+                </EventProvider>
+            </AuthProvider>
+        </ConfigProvider>
     );
 }
   

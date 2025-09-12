@@ -1,5 +1,5 @@
 import { Button, Card, Form, Input, Select, message, Typography, Space, Divider } from "antd";
-import { useAuth, type UserRole } from "../context/AuthContext";
+import { useAuth } from "../context/AuthContext";
 import { useNavigate, Link } from "react-router";
 import { UserOutlined, LockOutlined, TeamOutlined, UserAddOutlined } from "@ant-design/icons";
 
@@ -11,10 +11,9 @@ export default function RegisterPage() {
     const navigate = useNavigate();
 
     const onFinish = (values: {
-        username: string;
+        username?: string;
         password: string;
         confirmPassword: string;
-        role: UserRole;
         email: string;
         fullName: string;
         department: string;
@@ -25,10 +24,14 @@ export default function RegisterPage() {
             return;
         }
 
+        const autoUsername = values.username && values.username.trim().length > 0
+            ? values.username
+            : (values.email.split('@')[0] || `user${Math.floor(Math.random()*10000)}`);
+
         const userData = {
-            username: values.username,
+            username: autoUsername,
             password: values.password,
-            role: values.role,
+            role: 'participant' as const,
             email: values.email,
             fullName: values.fullName,
             department: values.department,
@@ -37,7 +40,7 @@ export default function RegisterPage() {
 
         const success = register(userData);
         if (success) {
-            message.success("Registration successful!");
+            message.success("Registration successful! You are registered as a Participant.");
             navigate("/dashboard");
         } else {
             message.error("Username or email already exists");
@@ -79,15 +82,12 @@ export default function RegisterPage() {
 
                     <Form.Item 
                         name="username" 
-                        label="Username"
-                        rules={[
-                            { required: true, message: 'Please enter a username' },
-                            { min: 3, message: 'Username must be at least 3 characters' }
-                        ]}
+                        label="Username (Optional)"
+                        rules={[{ min: 3, message: 'Username must be at least 3 characters' }]}
                     >
                         <Input 
                             prefix={<UserOutlined className="text-gray-400" />}
-                            placeholder="Choose a username" 
+                            placeholder="Leave blank to use your email prefix" 
                             className="rounded-lg"
                         />
                     </Form.Item>
@@ -177,40 +177,7 @@ export default function RegisterPage() {
                         />
                     </Form.Item>
                     
-                    <Form.Item 
-                        name="role" 
-                        label="Account Type"
-                        rules={[{ required: true, message: 'Please select your role' }]}
-                    >
-                        <Select 
-                            placeholder="What describes you best?"
-                            className="rounded-lg"
-                            suffixIcon={<TeamOutlined className="text-gray-400" />}
-                        >
-                            <Option value="participant">
-                                <Space>
-                                    <UserOutlined />
-                                    <div>
-                                        <div><strong>Participant</strong></div>
-                                        <div className="text-xs text-gray-400">
-                                            Join and attend events
-                                        </div>
-                                    </div>
-                                </Space>
-                            </Option>
-                            <Option value="organizer">
-                                <Space>
-                                    <TeamOutlined />
-                                    <div>
-                                        <div><strong>Organizer</strong></div>
-                                        <div className="text-xs text-gray-400">
-                                            Create and manage events
-                                        </div>
-                                    </div>
-                                </Space>
-                            </Option>
-                        </Select>
-                    </Form.Item>
+                    {/* Role is fixed to Participant by default */}
                     
                     <Form.Item className="mb-4">
                         <Button 
