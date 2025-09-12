@@ -1,4 +1,4 @@
-import { Layout, Menu, Button, Dropdown, Avatar, Space, Typography, Drawer } from "antd";
+import { Layout, Menu, Button, Dropdown, Avatar, Space, Typography, Drawer, Badge } from "antd";
 import { useState, useEffect } from "react";
 import {
     HomeOutlined,
@@ -18,12 +18,26 @@ import {
     MenuOutlined,
     BellOutlined,
     SettingOutlined,
+    PictureOutlined,
+    InfoCircleOutlined,
+    PhoneOutlined,
+    QuestionCircleOutlined,
+    BarChartOutlined,
+    SafetyOutlined,
+    CheckCircleOutlined,
+    EditOutlined,
+    DeleteOutlined,
+    EyeOutlined,
+    MessageOutlined,
+    NotificationOutlined,
+    CrownOutlined,
+    SecurityScanOutlined,
 } from "@ant-design/icons";
 import { Link, Outlet, useLocation } from "react-router";
 import { useAuth } from "../context/AuthContext";
 import type { MenuProps } from "antd";
 
-const { Header, Content, Footer } = Layout;
+const { Header, Content, Footer, Sider } = Layout;
 const { Text } = Typography;
 
 type MenuItem = Required<MenuProps>['items'][number];
@@ -31,6 +45,7 @@ type MenuItem = Required<MenuProps>['items'][number];
 export default function DashboardLayout() {
     const location = useLocation();
     const { user, logout } = useAuth();
+    const [collapsed, setCollapsed] = useState(false);
     const [mobileDrawerOpen, setMobileDrawerOpen] = useState(false);
     const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
 
@@ -51,90 +66,248 @@ export default function DashboardLayout() {
             { 
                 key: "/", 
                 icon: <HomeOutlined />, 
-                label: <Link to="/">Home</Link> 
+                label: <Link to="/">Trang chủ</Link> 
             },
             { 
                 key: "/events", 
                 icon: <CalendarOutlined />, 
-                label: <Link to="/events">Events</Link> 
+                label: <Link to="/events">Danh sách sự kiện</Link> 
+            },
+            { 
+                key: "/media-gallery", 
+                icon: <PictureOutlined />, 
+                label: <Link to="/event.media">Thư viện phương tiện</Link> 
+            },
+            {
+                key: "info",
+                icon: <InfoCircleOutlined />,
+                label: "Thông tin",
+                children: [
+                    { 
+                        key: "/about", 
+                        icon: <InfoCircleOutlined />, 
+                        label: <Link to="/about">Giới thiệu</Link> 
+                    },
+                    { 
+                        key: "/contact", 
+                        icon: <PhoneOutlined />, 
+                        label: <Link to="/contact">Liên hệ</Link> 
+                    },
+                    { 
+                        key: "/faq", 
+                        icon: <QuestionCircleOutlined />, 
+                        label: <Link to="/faq">FAQ</Link> 
+                    },
+                ]
             },
             { 
                 key: "/login", 
                 icon: <LoginOutlined />, 
-                label: <Link to="/login">Login</Link> 
+                label: <Link to="/login">Đăng nhập</Link> 
             },
             { 
                 key: "/register", 
                 icon: <UserAddOutlined />, 
-                label: <Link to="/register">Sign Up</Link> 
+                label: <Link to="/register">Đăng ký</Link> 
             },
         ];
     } else if (user.role === "participant") {
         menuItems = [
             { 
+                key: "/", 
+                icon: <HomeOutlined />, 
+                label: <Link to="/">Trang chủ</Link> 
+            },
+            { 
                 key: "/dashboard", 
                 icon: <DashboardOutlined />, 
-                label: <Link to="/dashboard">Dashboard</Link> 
+                label: <Link to="/dashboard">Bảng điều khiển</Link> 
             },
             { 
                 key: "/events", 
                 icon: <CalendarOutlined />, 
-                label: <Link to="/events">Browse Events</Link> 
+                label: <Link to="/events">Danh sách sự kiện</Link> 
             },
             { 
                 key: "/checkin", 
                 icon: <QrcodeOutlined />, 
-                label: <Link to="/checkin">Check-in</Link> 
+                label: <Link to="/checkin">Check-in QR</Link> 
             },
             { 
-                key: "/certificate", 
+                key: "/certificates", 
                 icon: <FileDoneOutlined />, 
-                label: <Link to="/certificate">Certificates</Link> 
+                label: <Link to="/certificates">Chứng chỉ</Link> 
             },
             { 
                 key: "/feedback", 
                 icon: <FormOutlined />, 
-                label: <Link to="/feedback">Feedback</Link> 
+                label: <Link to="/feedback">Đánh giá</Link> 
+            },
+            { 
+                key: "/media-gallery", 
+                icon: <PictureOutlined />, 
+                label: <Link to="/event.media">Thư viện phương tiện</Link> 
             },
         ];
     } else if (user.role === "organizer") {
         menuItems = [
             { 
-                key: "/dashboard", 
+                key: "/", 
+                icon: <HomeOutlined />, 
+                label: <Link to="/">Trang chủ</Link> 
+            },
+            { 
+                key: "/organizer/dashboard", 
                 icon: <DashboardOutlined />, 
-                label: <Link to="/dashboard">Dashboard</Link> 
+                label: <Link to="/organizer/dashboard">Bảng điều khiển</Link> 
             },
             {
                 key: "events-management",
                 icon: <CalendarOutlined />,
-                label: "Event Management",
+                label: "Quản lý sự kiện",
                 children: [
                     { 
-                        key: "/event/create", 
+                        key: "/organizer/events", 
+                        icon: <EyeOutlined />, 
+                        label: <Link to="/organizer/events">Tổng quan sự kiện</Link> 
+                    },
+                    { 
+                        key: "/organizer/event/create", 
                         icon: <PlusOutlined />, 
-                        label: <Link to="/event/create">Create Event</Link> 
+                        label: <Link to="/organizer/event/create">Tạo sự kiện</Link> 
                     },
                     { 
-                        key: "/event/submit", 
-                        icon: <AppstoreOutlined />, 
-                        label: <Link to="/event/submit">Submit for Approval</Link> 
+                        key: "/organizer/event/edit", 
+                        icon: <EditOutlined />, 
+                        label: <Link to="/organizer/event/edit">Chỉnh sửa sự kiện</Link> 
                     },
                     { 
-                        key: "/event/registrations", 
+                        key: "/organizer/registrations", 
                         icon: <TeamOutlined />, 
-                        label: <Link to="/event/registrations">Registrations</Link> 
-                    },
-                    { 
-                        key: "/event/media", 
-                        icon: <UploadOutlined />, 
-                        label: <Link to="/event/media">Upload Media</Link> 
-                    },
-                    { 
-                        key: "/event/certificates", 
-                        icon: <FileDoneOutlined />, 
-                        label: <Link to="/event/certificates">Certificates</Link> 
+                        label: <Link to="/organizer/registrations">Quản lý đăng ký</Link> 
                     },
                 ]
+            },
+            {
+                key: "media-management",
+                icon: <PictureOutlined />,
+                label: "Quản lý phương tiện",
+                children: [
+                    { 
+                        key: "/organizer/media/upload", 
+                        icon: <UploadOutlined />, 
+                        label: <Link to="/organizer/media/upload">Tải lên phương tiện</Link> 
+                    },
+                    { 
+                        key: "/organizer/media/gallery", 
+                        icon: <PictureOutlined />, 
+                        label: <Link to="/organizer/media/gallery">Thư viện</Link> 
+                    },
+                ]
+            },
+            { 
+                key: "/organizer/certificates", 
+                icon: <FileDoneOutlined />, 
+                label: <Link to="/organizer/certificates">Quản lý chứng chỉ</Link> 
+            },
+            { 
+                key: "/organizer/notifications", 
+                icon: <NotificationOutlined />, 
+                label: <Link to="/organizer/notifications">Gửi thông báo</Link> 
+            },
+            { 
+                key: "/organizer/statistics", 
+                icon: <BarChartOutlined />, 
+                label: <Link to="/organizer/statistics">Thống kê</Link> 
+            },
+        ];
+    } else if (user.role === "admin") {
+        menuItems = [
+            { 
+                key: "/", 
+                icon: <HomeOutlined />, 
+                label: <Link to="/">Trang chủ</Link> 
+            },
+            { 
+                key: "/admin", 
+                icon: <CrownOutlined />, 
+                label: <Link to="/admin">Bảng điều khiển Admin</Link> 
+            },
+            {
+                key: "user-management",
+                icon: <UserOutlined />,
+                label: "Quản lý người dùng",
+                children: [
+                    { 
+                        key: "/admin/users", 
+                        icon: <TeamOutlined />, 
+                        label: <Link to="/admin/users">Danh sách người dùng</Link> 
+                    },
+                    { 
+                        key: "/admin/users/roles", 
+                        icon: <SafetyOutlined />, 
+                        label: <Link to="/admin/users/roles">Quản lý vai trò</Link> 
+                    },
+                    { 
+                        key: "/admin/users/status", 
+                        icon: <CheckCircleOutlined />, 
+                        label: <Link to="/admin/users/status">Trạng thái tài khoản</Link> 
+                    },
+                ]
+            },
+            {
+                key: "event-management",
+                icon: <CalendarOutlined />,
+                label: "Quản lý sự kiện",
+                children: [
+                    { 
+                        key: "/admin/events", 
+                        icon: <EyeOutlined />, 
+                        label: <Link to="/admin/events">Tất cả sự kiện</Link> 
+                    },
+                    { 
+                        key: "/admin/events/approval", 
+                        icon: <CheckCircleOutlined />, 
+                        label: <Link to="/admin/events/approval">Duyệt sự kiện</Link> 
+                    },
+                    { 
+                        key: "/admin/events/rejected", 
+                        icon: <DeleteOutlined />, 
+                        label: <Link to="/admin/events/rejected">Sự kiện bị từ chối</Link> 
+                    },
+                ]
+            },
+            {
+                key: "content-moderation",
+                icon: <SecurityScanOutlined />,
+                label: "Kiểm duyệt nội dung",
+                children: [
+                    { 
+                        key: "/admin/content/descriptions", 
+                        icon: <EditOutlined />, 
+                        label: <Link to="/admin/content/descriptions">Mô tả sự kiện</Link> 
+                    },
+                    { 
+                        key: "/admin/content/feedback", 
+                        icon: <MessageOutlined />, 
+                        label: <Link to="/admin/content/feedback">Phản hồi</Link> 
+                    },
+                    { 
+                        key: "/admin/content/media", 
+                        icon: <PictureOutlined />, 
+                        label: <Link to="/admin/content/media">Phương tiện</Link> 
+                    },
+                ]
+            },
+            { 
+                key: "/admin/notifications", 
+                icon: <NotificationOutlined />, 
+                label: <Link to="/admin/notifications">Thông báo hệ thống</Link> 
+            },
+            { 
+                key: "/admin/statistics", 
+                icon: <BarChartOutlined />, 
+                label: <Link to="/admin/statistics">Thống kê tổng quan</Link> 
             },
         ];
     }
@@ -145,12 +318,12 @@ export default function DashboardLayout() {
             {
                 key: 'profile',
                 icon: <UserOutlined />,
-                label: <Link to="/profile">Profile</Link>,
+                label: <Link to="/profile">Hồ sơ cá nhân</Link>,
             },
             {
                 key: 'settings',
                 icon: <SettingOutlined />,
-                label: <Link to="/settings">Settings</Link>,
+                label: <Link to="/settings">Cài đặt</Link>,
             },
             {
                 type: 'divider' as const,
@@ -158,20 +331,20 @@ export default function DashboardLayout() {
             {
                 key: 'logout',
                 icon: <LogoutOutlined />,
-                label: <span onClick={logout}>Logout</span>,
+                label: <span onClick={logout}>Đăng xuất</span>,
                 danger: true,
             },
         ],
     };
 
-    const renderMenu = (mode: "horizontal" | "vertical" = "horizontal") => (
+    const renderSidebarMenu = () => (
         <Menu
-            theme={mode === "horizontal" ? "dark" : "light"}
-            mode={mode}
+            theme="light"
+            mode="inline"
             selectedKeys={[location.pathname]}
             items={menuItems}
             style={{
-                background: mode === "horizontal" ? "transparent" : "#fff",
+                background: "transparent",
                 border: "none",
                 fontSize: "14px",
                 fontWeight: 500,
@@ -180,124 +353,189 @@ export default function DashboardLayout() {
     );
 
     const headerStyle = {
-        background: 'linear-gradient(135deg, #3b82f6 0%, #8b5cf6 50%, #6366f1 100%)',
-        padding: '0 32px',
+        background: 'linear-gradient(135deg, #00afef 0%, #0099d4 50%, #007bb8 100%)',
+        padding: '0 24px',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'space-between',
-        boxShadow: '0 8px 32px rgba(59, 130, 246, 0.3)',
+        boxShadow: '0 4px 20px rgba(0, 175, 239, 0.3)',
         position: 'sticky' as const,
         top: 0,
         zIndex: 1000,
+        height: '64px',
+    };
+
+    const siderStyle = {
+        background: 'linear-gradient(180deg, rgba(255,255,255,0.95) 0%, rgba(248,250,252,0.95) 100%)',
         backdropFilter: 'blur(16px)',
-        borderBottom: '1px solid rgba(255, 255, 255, 0.1)',
+        borderRight: '1px solid rgba(0, 175, 239, 0.1)',
+        boxShadow: '4px 0 20px rgba(0, 175, 239, 0.1)',
     };
 
     return (
         <Layout style={{ minHeight: "100vh" }}>
-            {/* Mobile Header */}
-            {isMobile ? (
-                <Header style={headerStyle}>
-                    <div style={{ display: 'flex', alignItems: 'center' }}>
+            {/* Header */}
+            <Header style={headerStyle}>
+                <div style={{ display: 'flex', alignItems: 'center' }}>
+                    {!isMobile && (
+                        <Button
+                            type="text"
+                            icon={collapsed ? <MenuOutlined /> : <MenuOutlined />}
+                            onClick={() => setCollapsed(!collapsed)}
+                            style={{ 
+                                color: 'white', 
+                                marginRight: '16px',
+                                fontSize: '16px'
+                            }}
+                        />
+                    )}
+                    {isMobile && (
                         <Button
                             type="text"
                             icon={<MenuOutlined />}
                             onClick={() => setMobileDrawerOpen(true)}
                             style={{ color: 'white', marginRight: '16px' }}
                         />
-                        <Text strong style={{ color: 'white', fontSize: '20px' }}>
-                            EventSphere
-                        </Text>
-                    </div>
-                    
-                    {user && (
-                        <Space>
+                    )}
+                    <Text 
+                        strong 
+                        style={{ 
+                            color: 'white', 
+                            fontSize: isMobile ? '20px' : '24px',
+                            fontWeight: 700,
+                            fontFamily: 'Poppins',
+                            textShadow: '0 2px 4px rgba(0,0,0,0.2)',
+                        }}
+                    >
+                        EventSphere
+                    </Text>
+                </div>
+                
+                {user && (
+                    <Space size="middle">
+                        <Badge count={3} size="small">
                             <Button
                                 type="text"
                                 icon={<BellOutlined />}
-                                style={{ color: 'white' }}
+                                style={{ color: 'white', fontSize: '16px' }}
                             />
-                            <Dropdown menu={userMenu} placement="bottomRight">
+                        </Badge>
+                        <Dropdown menu={userMenu} placement="bottomRight">
+                            <Space style={{ cursor: 'pointer', color: 'white' }}>
                                 <Avatar 
+                                    src={user.avatar}
                                     style={{ 
                                         backgroundColor: 'rgba(255,255,255,0.2)',
-                                        cursor: 'pointer'
                                     }}
                                     icon={<UserOutlined />}
                                 />
-                            </Dropdown>
-                        </Space>
-                    )}
-                </Header>
-            ) : (
-                /* Desktop Header */
-                <Header style={headerStyle}>
-                    <div style={{ display: 'flex', alignItems: 'center', flex: 1 }}>
-                        <Text 
-                            strong 
-                            style={{ 
-                                color: 'white', 
-                                fontSize: '28px', 
-                                marginRight: '48px',
-                                fontWeight: 800,
-                                fontFamily: 'Poppins',
-                                textShadow: '0 2px 4px rgba(0,0,0,0.2)',
-                                letterSpacing: '-0.5px'
-                            }}
-                        >
-                            EventSphere
-                        </Text>
-                        <div style={{ flex: 1 }}>
-                            {renderMenu("horizontal")}
-                        </div>
-                    </div>
-                    
-                    {user && (
-                        <Space size="middle">
-                            <Button
-                                type="text"
-                                icon={<BellOutlined />}
-                                style={{ color: 'white' }}
-                            />
-                            <Dropdown menu={userMenu} placement="bottomRight">
-                                <Space style={{ cursor: 'pointer', color: 'white' }}>
-                                    <Avatar 
-                                        style={{ 
-                                            backgroundColor: 'rgba(255,255,255,0.2)',
-                                        }}
-                                        icon={<UserOutlined />}
-                                    />
-                                    <Text style={{ color: 'white' }}>
-                                        {user.username}
-                                    </Text>
-                                </Space>
-                            </Dropdown>
-                        </Space>
-                    )}
-                </Header>
-            )}
-
-            {/* Mobile Drawer */}
-            <Drawer
-                title="Navigation"
-                placement="left"
-                onClose={() => setMobileDrawerOpen(false)}
-                open={mobileDrawerOpen}
-                bodyStyle={{ padding: 0 }}
-            >
-                {renderMenu("vertical")}
-            </Drawer>
+                                {!isMobile && (
+                                    <div style={{ textAlign: 'left' }}>
+                                        <div style={{ color: 'white', fontSize: '14px', fontWeight: 600 }}>
+                                            {user.fullName || user.username}
+                                        </div>
+                                        <div style={{ color: 'rgba(255,255,255,0.8)', fontSize: '12px' }}>
+                                            {user.role === 'admin' ? 'Quản trị viên' : 
+                                             user.role === 'organizer' ? 'Người tổ chức' : 'Sinh viên'}
+                                        </div>
+                                    </div>
+                                )}
+                            </Space>
+                        </Dropdown>
+                    </Space>
+                )}
+            </Header>
 
             <Layout>
+                {/* Desktop Sidebar */}
+                {!isMobile && (
+                    <Sider 
+                        collapsible 
+                        collapsed={collapsed} 
+                        onCollapse={setCollapsed}
+                        width={280}
+                        collapsedWidth={80}
+                        style={siderStyle}
+                        trigger={null}
+                    >
+                        <div style={{ 
+                            padding: '20px 16px',
+                            borderBottom: '1px solid rgba(0, 175, 239, 0.1)',
+                            textAlign: collapsed ? 'center' : 'left'
+                        }}>
+                            {!collapsed && user && (
+                                <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                                    <Avatar 
+                                        size={48}
+                                        src={user.avatar}
+                                        style={{ backgroundColor: '#00afef' }}
+                                        icon={<UserOutlined />}
+                                    />
+                                    <div>
+                                        <div style={{ fontWeight: 600, color: '#1f2937', fontSize: '14px' }}>
+                                            {user.fullName || user.username}
+                                        </div>
+                                        <div style={{ color: '#6b7280', fontSize: '12px' }}>
+                                            {user.department}
+                                        </div>
+                                    </div>
+                                </div>
+                            )}
+                            {collapsed && user && (
+                                <Avatar 
+                                    size={40}
+                                    src={user.avatar}
+                                    style={{ backgroundColor: '#00afef' }}
+                                    icon={<UserOutlined />}
+                                />
+                            )}
+                        </div>
+                        <div style={{ padding: '16px 0' }}>
+                            {renderSidebarMenu()}
+                        </div>
+                    </Sider>
+                )}
+
+                {/* Mobile Drawer */}
+                <Drawer
+                    title={
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                            <Avatar 
+                                src={user?.avatar}
+                                style={{ backgroundColor: '#00afef' }}
+                                icon={<UserOutlined />}
+                            />
+                            {user && (
+                                <div>
+                                    <div style={{ fontWeight: 600, fontSize: '14px' }}>
+                                        {user.fullName || user.username}
+                                    </div>
+                                    <div style={{ color: '#6b7280', fontSize: '12px' }}>
+                                        {user.department}
+                                    </div>
+                                </div>
+                            )}
+                        </div>
+                    }
+                    placement="left"
+                    onClose={() => setMobileDrawerOpen(false)}
+                    open={mobileDrawerOpen}
+                    bodyStyle={{ padding: 0 }}
+                    width={280}
+                >
+                    {renderSidebarMenu()}
+                </Drawer>
+
                 <Content style={{ 
-                    margin: isMobile ? '20px' : '32px 48px', 
-                    padding: isMobile ? '20px' : '32px', 
-                    background: 'linear-gradient(135deg, rgba(255,255,255,0.9) 0%, rgba(248,250,252,0.9) 100%)',
+                    margin: isMobile ? '16px' : '24px', 
+                    padding: isMobile ? '16px' : '24px', 
+                    background: 'linear-gradient(135deg, rgba(255,255,255,0.95) 0%, rgba(248,250,252,0.95) 100%)',
                     backdropFilter: 'blur(16px)',
-                    borderRadius: '24px',
-                    minHeight: 'calc(100vh - 160px)',
-                    boxShadow: '0 20px 40px rgba(0,0,0,0.1)',
-                    border: '1px solid rgba(255,255,255,0.2)'
+                    borderRadius: '16px',
+                    minHeight: 'calc(100vh - 112px)',
+                    boxShadow: '0 8px 32px rgba(0, 175, 239, 0.1)',
+                    border: '1px solid rgba(255,255,255,0.2)',
+                    overflow: 'auto'
                 }}>
                     <Outlet />
                 </Content>
@@ -305,15 +543,15 @@ export default function DashboardLayout() {
 
             <Footer style={{ 
                 textAlign: 'center', 
-                background: 'linear-gradient(135deg, #3b82f6 0%, #8b5cf6 50%, #6366f1 100%)', 
+                background: 'linear-gradient(135deg, #00afef 0%, #0099d4 50%, #007bb8 100%)', 
                 color: 'white',
                 fontWeight: 600,
-                fontSize: '16px',
-                padding: '24px',
-                boxShadow: '0 -4px 20px rgba(59, 130, 246, 0.2)'
+                fontSize: '14px',
+                padding: '16px 24px',
+                boxShadow: '0 -4px 20px rgba(0, 175, 239, 0.2)'
             }}>
                 <Text style={{ color: 'white', fontFamily: 'Poppins' }}>
-                    EventSphere ©2025 — University Event Management System
+                    EventSphere ©2025 — Hệ thống quản lý sự kiện trường đại học
                 </Text>
             </Footer>
         </Layout>
